@@ -1,6 +1,7 @@
 package xis.xdsp.model;
 
 import xis.xdsp.dto.Recipe;
+import xis.xdsp.dto.RecipeMap;
 import xis.xdsp.dto.TransputMap;
 import xis.xdsp.util.AppUtil;
 import xis.xdsp.util.CsvReader;
@@ -47,13 +48,13 @@ public class RecipeCsvReader extends CsvReader {
     public static final int COL_IN6_ABB = 18;
     public static final int COL_IN6_QTY = 19;
 
-    public LinkedHashMap<String, Recipe> readRecipeListCsv() throws Exception {
+    public RecipeMap readRecipeListCsv() throws Exception {
         List<List<String>> lineList = readCsv(CSV_NAME);
         return readCsvLines(lineList);
     }
 
-    public LinkedHashMap<String, Recipe> readCsvLines(List<List<String>> lineList) throws Exception {
-        LinkedHashMap<String, Recipe> recipeMap = new LinkedHashMap<>();
+    public RecipeMap readCsvLines(List<List<String>> lineList) throws Exception {
+        RecipeMap recipeMap = new RecipeMap();
         int line = LINE_START;
         try {
             while (line < lineList.size()) {
@@ -82,31 +83,21 @@ public class RecipeCsvReader extends CsvReader {
             while (col < colList.size()) {
                 val = colList.get(col);
                 switch (col) {
-                    case COL_NAME:
-                        recipe.setName(val);
-                        break;
-                    case COL_WITH:
-                        recipe.setWith(val);
-                        break;
-                    case COL_CODE:
-                        recipe.setCode(val);
-                        break;
-                    case COL_TIME:
-                        recipe.setTime(parseDouble(val));
-                        break;
-                    case COL_OUT1_ABB, COL_OUT2_ABB, COL_IN1_ABB, COL_IN2_ABB, COL_IN3_ABB, COL_IN4_ABB, COL_IN5_ABB, COL_IN6_ABB:
-                        openTransput = val;
-                        break;
-                    case COL_OUT1_QTY, COL_OUT2_QTY:
+                    case COL_NAME -> recipe.setName(val);
+                    case COL_WITH -> recipe.setWith(val);
+                    case COL_CODE -> recipe.setCode(val);
+                    case COL_TIME -> recipe.setTime(parseDouble(val));
+                    case COL_OUT1_ABB, COL_OUT2_ABB, COL_IN1_ABB, COL_IN2_ABB, COL_IN3_ABB, COL_IN4_ABB, COL_IN5_ABB, COL_IN6_ABB ->
+                            openTransput = val;
+                    case COL_OUT1_QTY, COL_OUT2_QTY -> {
                         addTransput(outputs, openTransput, val);
                         openTransput = null;
-                        break;
-                    case COL_IN1_QTY, COL_IN2_QTY, COL_IN3_QTY, COL_IN4_QTY, COL_IN5_QTY, COL_IN6_QTY:
+                    }
+                    case COL_IN1_QTY, COL_IN2_QTY, COL_IN3_QTY, COL_IN4_QTY, COL_IN5_QTY, COL_IN6_QTY -> {
                         addTransput(inputs, openTransput, val);
                         openTransput = null;
-                        break;
-                    default:
-                        System.out.println("WARN: col " + col + " not indexed");
+                    }
+                    default -> System.out.println("WARN: col " + col + " not indexed");
                 }
                 col++;
             }

@@ -1,6 +1,7 @@
 package xis.xdsp.model;
 
 import xis.xdsp.dto.Item;
+import xis.xdsp.dto.ItemMap;
 import xis.xdsp.util.AppUtil;
 import xis.xdsp.util.CsvReader;
 
@@ -22,13 +23,13 @@ public class ItemCsvReader extends CsvReader {
     public static final int COL_FUEL_E = 6;
     public static final int COL_FUEL_CHAMBER = 7;
 
-    public LinkedHashMap<String, Item> readItemListCsv() throws Exception {
+    public ItemMap readItemListCsv() throws Exception {
         List<List<String>> lineList = readCsv(CSV_NAME);
         return readCsvLines(lineList);
     }
 
-    public LinkedHashMap<String, Item> readCsvLines(List<List<String>> lineList) throws Exception {
-        LinkedHashMap<String, Item> itemMap = new LinkedHashMap<>();
+    public ItemMap readCsvLines(List<List<String>> lineList) throws Exception {
+        ItemMap itemMap = new ItemMap();
         int line = LINE_START;
         try {
             while (line < lineList.size()) {
@@ -63,7 +64,7 @@ public class ItemCsvReader extends CsvReader {
                         item.setAbb(val);
                         break;
                     case COL_ABBC:
-                        //not important
+                        //not used
                         break;
                     case COL_RARE:
                         item.setRare(parseOneAsBoolean(val));
