@@ -1,0 +1,168 @@
+;;;;;Fuel;;
+Type;Name;Abb;AbbC;Rare;Type;E (MJ);Chamber
+Material;Iron Ingot;Ir;1;;;;
+Material;Copper Ingot;Co;1;;;;
+Material;High-purity Silicon;Sil;1;;;;
+Material;Titanium Ingot;Tit;1;;;;
+Material;Stone Brick;Br;1;;;;
+Material;Energetic Graphite;EGr;1;;Chemical;6,75;50,00%
+Material;Graphene;Gr;1;;Chemical;0,1;-70,00%
+Material;Plastic;Plc;1;;;;
+Material;Proliferator Mk.I;Pr1;1;;Chemical;2,24;30,00%
+Material;Proliferator Mk.II;Pr2;1;;Chemical;8,85;60,00%
+Material;Proliferator Mk.III;Pr3;1;;Chemical;21,2;150,00%
+End Product;Magnum Ammo Box;Amm;1;;;;
+End Product;Missile Set;Miss;1;;;;
+Material;Magnet;Mag;1;;;;
+Component;Magnet Coil;Coil;1;;;;
+Material;Crystal Silicon;CrSil;1;;;;
+Material;Titanium Alloy;All;1;;;;
+Material;Glass;Gl;1;;;;
+Material;Diamond;Dmd;1;;;;
+Material;Organic Crystal;OCr;1;1;Chemical;1,8;-20,00%
+Component;Combustible Unit;Comb;1;;Chemical;9,72;80,00%
+Component;Explosive Unit;ExUnit;1;;Chemical;21,6;120,00%
+Component;Crystal Explosive Unit;CrUnit;1;;Chemical;54;200,00%
+Ammo;Titanium Ammo Box;TitAmm;1;;;;
+Ammo;Supersonic Missile Set;SMiss;1;;;;
+Material;Steel;St;1;;;;
+Component;Electronic Motor;Motor;1;;;;
+Material;Titanium Glass;TitGl;1;;;;
+Material;Prism;Prism;1;;;;
+Material;Titanium Crystal;TitCr;1;;;;
+Component;Engine;Eng;1;;;;
+Component;Thruster;Thr;1;;;;
+Component;Reinforced Thruster;RThr;1;;;;
+End Product;Superalloy Ammo Box;AllAmm;1;;;;
+End Product;Gravity Missile Set;GMiss;1;;;;
+Component;Gear;Gear;1;;;;
+Component;Electromagnetic Turbine;Turb;1;;;;
+Natural Resource;Silicon Ore;SilO;2;;;;
+Component;Circuit Board;Circ;1;;;;
+Component;Graviton Lens;GLen;1;;;;
+Material;Sulfuric Acid;Acid;1;;;;
+Material;Carbon Nanotube;NTube;1;;Chemical;0,08;-80,00%
+Material;Strange Matter;SMat;1;;;;
+Logistics;Logistics Bot;Bot;1;;;;
+Logistics;Logistics Drone;Drone;1;;;;
+Logistics;Interestellar Logistic Vessel;Vessel;1;;;;
+End Product;Plasma Capsule;Plasm;1;;;;
+End Product;Shell Set;Shell;1;;;;
+Component;Plasma Exciter;Exc;1;;;;
+Component;Super-magnetic Ring;Ring;1;;;;
+Component;Particle Broadband;Bbnd;1;;;;
+Component;Processor;Proc;1;;;;
+Material;Casimir Crystal;Cas;1;;;;
+Component;Particle Container;Cont;1;;;;
+Material;Deuterium;D;1;;Chemical;9;100,00%
+End Product;Solar Sail;Sail;1;;;;
+Material;Frame Material;Frame;1;;;;
+Component;Dyson Sphere Component;Dyson;1;;;;
+End Product;Small Carrier Rocket;Rocket;1;;;;
+End Product;Antimatter Capsule;AmCap;1;;;;
+End Product;High-Explosive Shell Set;HeShell;1;;;;
+Component;Photon Combiner;PhC;1;;;;
+Component;Mycrocrystalline Component;Mcr;1;;;;
+Component;Quantum Chip;QChip;1;;;;
+End Product;Hydrogen Fuel Rod;HRod;1;;Chemical;54;200,00%
+End Product;Deuterium Fuel Rod;DRod;1;;Nuclear-E;600;300,00%
+End Product;Antimatter Fuel Rod;AmRod;1;;Mass-E;7200;500,00%
+End Product;Strange Anihilation Fuel Rod;AnRod;1;;Mass-E;72000;1100,00%
+Component;Plane Filter;PlFil;1;;;;
+Component;Anihilation Constraint Sphere;AnSph;1;;;;
+End Product;Crystal Shell Set;CrShell;1;;;;
+Science Matrix;Electromagnetic Matrix;EmMx;1;;;;
+Science Matrix;Energy Matrix;EMx;1;;;;
+Science Matrix;Structure Matrix;SMx;1;;;;
+Science Matrix;Information Matrix;IMx;1;;;;
+Science Matrix;Gravity Matrix;GMx;1;;;;
+Science Matrix;Universe Matrix;UMx;1;;;;
+End Product;Prototype;Proto;1;;;;
+End Product;Precision Drone;PDrone;1;;;;
+End Product;Attack Drone;ADrone;1;;;;
+End Product;Corvette;Corv;1;;;;
+End Product;Destroyer;Dest;1;;;;
+Component;Space Warper;Warp;1;;;;
+Component;Foundation;Fdn;1;;;;
+Power Transmission;Tesla Tower;Tow;1;;;;
+Power Transmission;Wireless Power Tower;WTow;1;;;;
+Power Transmission;Satellite Substration;Sat;1;;;;
+Power Facility;Wind Turbine;Wind;1;;;;
+Power Facility;Thermal Power Plant;Thermal;1;;;;
+Power Facility;Solar Panel;Solar;1;;;;
+Power Storage;Accumulator;Acc;1;;;;
+Power Facility;Geothermal Power Station;Geoth;1;;;;
+Power Facility;Mini Fusion Power Plant;Fusion;1;;;;
+Power Transmission;Energy Exchanger;EE;1;;;;
+Power Facility;Ray Receiver;RR;1;;;;
+Power Facility;Artificial Star;Star;1;;;;
+Logistics;Conveyor Belt Mk.I;Belt1;1;;;;
+Logistics;Conveyor Belt Mk.II;Belt2;1;;;;
+Logistics;Conveyor Belt Mk.III;Belt3;1;;;;
+Logistics;Splitter;Sp;1;;;;
+Logistics;Automatic Piler;Piler;1;;;;
+Logistics;Traffic Monitor;Monitor;1;;;;
+Production Facility;Spray Coater;Spray;1;;;;
+Logistics;Depot MK.I;Depot;1;;;;
+Logistics;Depot MK.II;Depot2;1;;;;
+Logistics;Storage Tank;Tank;1;;;;
+Logistics;Logistics Distributor;LD;1;;;;
+Logistics;Planetary Logistics Station;PLS;1;;;;
+Logistics;Interestellar Logistics Station;ILS;1;;;;
+Logistics;Orbital Collector;Orb;1;;;;
+Logistics;Sorter MK.I;Sr1;1;;;;
+Logistics;Sorter MK.II;Sr2;1;;;;
+Logistics;Sorter MK.III;Sr3;1;;;;
+Mining Facility;Mining Machine;Mim;1;;;;
+Mining Facility;Advanced Mining Machine;AMim;1;;;;
+Fluid Pumping Facility;Water Pump;Pump;1;;;;
+Oil Extraction Facility;Oil Extractor;Extr;1;;;;
+Refining Facility;Oil Refinery;Refi;1;;;;
+Fractionation Facility;Fractionator;Frtr;1;;;;
+Chemical Facility;Chemical Plant;Chem;1;;;;
+Chemical Facility;Quantum Chemical Plant;QChem;1;;;;
+Particle Collider;Miniature Particle Collider;Coll;1;;;;
+Smelting Facility;Arc Smelter;Sm;1;;;;
+Smelting Facility;Plane Smelter;PlSm;1;;;;
+Smelting Facility;Negentrophy Smelter;NegSm;1;;;;
+Assembler;Assembling Machine Mk.I;As;1;;;;
+Assembler;Assembling Machine Mk.II;As2;1;;;;
+Assembler;Assembling Machine Mk.III;As3;1;;;;
+Assembler;Re-composing Assembler;RcAs;1;;;;
+Research Facility;Matrix Lab;Lab;1;;;;
+Research Facility;Self Evolution Lab;SevLab;1;;;;
+Production Facility;EM-Rail Ejector;Rail;1;;;;
+Production Facility;Vertical Launching Silo;Silo;2;;;;
+Turret;Gauss Turret;GTur;1;;;;
+Turret;Missile Turret;MTur;1;;;;
+Turret;Implosion Cannon;ICan;1;;;;
+Turret;Laser Turret;LTur;1;;;;
+Turret;Plasma Turret;PTur;1;;;;
+Defense Facility;Battlefield Analysis Base;BAB;1;;;;
+Defense Facility;Signal Tower;SigTow;1;;;;
+Defense Facility;Planetary Shield Generator;PSG;1;;;;
+Natural Resource;Iron Ore;IrO;1;;;;
+Natural Resource;Copper Ore;CoO;1;;;;
+Natural Resource;Titanium Ore;TitO;1;;;;
+Natural Resource;Carbon;C;1;;Chemical;2,7;0,00%
+Natural Resource;Stone;Stn;1;;;;
+Natural Resource;Water;Wat;1;;;;
+Natural Resource;Log;Log;1;;Chemical;1,5;-10,00%
+Natural Resource;Plant Fuel;Plant;1;;Chemical;0,5;-30,00%
+Natural Resource;Crude Oil;Crude;1;1;Chemical;4,05;20,00%
+Natural Resource;Fire Ice;Ice;1;1;;;
+Natural Resource;Kimberlite Ore;Kim;1;1;;;
+Natural Resource;Fractal Silicon;FSil;1;1;;;
+Natural Resource;Grating Crystal;Grat;1;1;;;
+Natural Resource;Stalagmite Crystal;Stal;1;1;;;
+Natural Resource;Unipolar Magnet;UMag;1;1;;;
+Material;Refined Oil;Oil;1;;Chemical;4,5;30,00%
+Material;Hydrogen;H;1;;Chemical;9;100,00%
+Material;Antimatter;Am;1;;;600;
+Material;Critical Photon;Ph;1;;;1200;
+Dark Fog;Core Element;Core;1;;;;
+Dark Fog;Matter Recombinator;MatRec;1;;;;
+Dark Fog;Negentrophy Singularity;NegSin;1;;Chemical;3,6;20,00%
+Dark Fog;Energy Shard;Shard;1;;;;
+Dark Fog;Silicon-based Neuron;Neur;1;;;;
+Dark Fog;Dark Fog Matrix;DfMx;1;;;;
