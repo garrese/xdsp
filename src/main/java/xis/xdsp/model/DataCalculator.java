@@ -101,12 +101,15 @@ public class DataCalculator {
                 double inputAmount = amount * inputCost.getValue();
 
                 RecipeCost currentRecipeCost = new RecipeCost();
-//                if (alternativeRecipe == 0) {
-//                    currentRecipeCost = recipeCost;
-//                } else {
-//                    currentRecipeCost = new RecipeCost();
-//                    recipeCostList.add(currentRecipeCost);
-//                }
+                if (alternativeRecipe == 0) {
+                    currentRecipeCost = recipeCost;
+                } else {
+                    RecipeCost alternativeRecipeCost = new RecipeCost();
+                    RecipeCost rootCopy = recipeCost.getRoot().getCopy();
+                    rootCopy.getRecipeCostList().add(alternativeRecipeCost);
+                    currentRecipeCost = new RecipeCost();
+                    recipeCostList.add(currentRecipeCost);
+                }
 
                 currentRecipeCost.setItemCost(new ItemCost(inputCost.getKey(), inputAmount, outputRecipe.getCode()));
                 if (!outputRecipe.isSource()) {
