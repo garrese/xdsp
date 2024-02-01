@@ -48,16 +48,16 @@ public class Recipe {
      */
     TransputMap itemCost;
 
-    RecipeCost recipeCost;
+    RecipeTreeItem recipeTreeItem;
 
     public boolean isSource() {
         if (inputs.size() == 0) return true;
         else return false;
     }
 
-    @Override
-    public String toString() {
-        return new Gson().toJson(this);
-    }
+//    @Override
+//    public String toString() {
+//        return new Gson().toJson(this);
+//    }
 
 }

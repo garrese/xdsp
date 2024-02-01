@@ -49,10 +49,10 @@ public class DataCalculator {
     public static void calcRecipesItemCostTree() {
         Memory.RECIPES.values().forEach(recipe -> {
             System.out.println("[DataCalculator.calcRecipesItemCostTree] INI " + recipe.getName());
-            RecipeCost recipeCost = new RecipeCost();
-            recipeCost.setItemCost(new ItemCost(null, 1d, recipe.getCode()));
-            recipe.setRecipeCost(calcRecipeCostTree(recipe, 1, recipeCost,0));
-            System.out.println("[DataCalculator.calcRecipesItemCostTree] FIN " + recipe.getName() + " => " + recipe.getRecipeCost());
+            RecipeTreeItem recipeTreeItem = new RecipeTreeItem();
+            recipeTreeItem.setCost(new RecipeTreeItemCost(null, 1d, recipe.getCode()));
+            recipe.setRecipeTreeItem(calcRecipeCostTree(recipe, 1, recipeTreeItem));
+            System.out.println("[DataCalculator.calcRecipesItemCostTree] FIN " + recipe.getName() + " => " + recipe.getRecipeTreeItem());
         });
     }
 
@@ -87,9 +87,14 @@ public class DataCalculator {
 //                                                      Hay que guardar los totales con las referencias. Guardar el árbol no tiene sentido, ya puedo recorrer las dependencias con la estructura en memoria
 //                                                      En verdad no haría falta guardar nada? tôdo se puede calcular en el momento.
 
-    public static RecipeCost calcRecipeCostTree(Recipe recipe, double amount, RecipeCost recipeCost, int recipeIndex) {
+    public static RecipeTreeItem calcRecipeCostTree(Recipe recipe, double amount, RecipeTreeItem recipeTreeItem) {
 //        System.out.println("[DataCalculator.calcRecipeCostTree] INI (" + recipe.getName() + "," + amount + "," + recipeCostTree + ")");
 //        if (recipe.getName().equals("Supersonic Missile Set")) return new RecipeCostTree();
+
+        if(recipe.getCode().equals("Gr-Sm")){
+            System.out.println("break point here");
+        }
+
         TransputMap itemCost = recipe.getItemCost();
         for (Map.Entry<String, Double> inputCost : itemCost.entrySet()) {
             Item item = Memory.ITEMS.get(inputCost.getKey());
@@ -100,27 +105,29 @@ public class DataCalculator {
                 Recipe outputRecipe = Memory.RECIPES.get(outputRecipeKey);
                 double inputAmount = amount * inputCost.getValue();
 
-                RecipeCost currentRecipeCost = new RecipeCost();
+                RecipeTreeItem outputRecipeTreeItem = new RecipeTreeItem();
+                outputRecipeTreeItem.setTreeMapKeys(new ArrayList<>(recipeTreeItem.getTreeMapKeys()));
+                outputRecipeTreeItem.getTreeMapKeys().add(outputRecipeKey);
+                outputRecipeTreeItem.setCost(new RecipeTreeItemCost(inputCost.getKey(), inputAmount, outputRecipe.getCode()));
+
                 if (alternativeRecipe == 0) {
-                    currentRecipeCost = recipeCost;
+                    recipeTreeItem.addChild(outputRecipeTreeItem);
                 } else {
-                    RecipeCost alternativeRecipeCost = new RecipeCost();
-                    RecipeCost rootCopy = recipeCost.getRoot().getCopy();
-                    rootCopy.getRecipeCostList().add(alternativeRecipeCost);
-                    currentRecipeCost = new RecipeCost();
-                    recipeCostList.add(currentRecipeCost);
+                    RecipeTreeItem thisMainBranchCopy = recipeTreeItem.getThisMainBranch().getCopy();
+                    thisMainBranchCopy.getForkList().add(outputRecipeKey);
+                    thisMainBranchCopy.addChild(outputRecipeTreeItem);
+
+                    RecipeTreeItem.navigate(thisMainBranchCopy,outputRecipeTreeItem.getTreeMapKeys());
                 }
 
-                currentRecipeCost.setItemCost(new ItemCost(inputCost.getKey(), inputAmount, outputRecipe.getCode()));
                 if (!outputRecipe.isSource()) {
-                    calcRecipeCostTree(outputRecipe, amount * inputAmount, currentRecipeCost,0);
+                    calcRecipeCostTree(outputRecipe, amount * inputAmount, outputRecipeTreeItem);
                 }
-                recipeCost.getRecipeCostList().add(currentRecipeCost);
 //                System.out.println("outputRecipeKey=" + outputRecipeKey + ", recipeCostTree.getCost=" + recipeCostTree.getCost());
                 alternativeRecipe++;
             }
         }
-        return recipeCost;
+        return recipeTreeItem;
     }
 
 }
