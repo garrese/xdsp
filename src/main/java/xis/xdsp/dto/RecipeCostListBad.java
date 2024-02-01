@@ -1,10 +1,12 @@
 package xis.xdsp.dto;
 
 import com.google.gson.Gson;
+import lombok.Data;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 
-public class RecipeMap extends LinkedHashMap<String, Recipe> {
+@Data
+public class RecipeCostListBad extends ArrayList<RecipeCost> {
 
     @Override
     public String toString() {

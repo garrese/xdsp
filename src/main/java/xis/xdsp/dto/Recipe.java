@@ -1,5 +1,6 @@
 package xis.xdsp.dto;
 
+import com.google.gson.Gson;
 import lombok.Data;
 
 @Data
@@ -47,9 +48,16 @@ public class Recipe {
      */
     TransputMap itemCost;
 
+    RecipeCost recipeCost;
+
     public boolean isSource() {
         if (inputs.size() == 0) return true;
         else return false;
+    }
+
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
     }
 
 }

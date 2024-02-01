@@ -1,8 +1,8 @@
 package xis.xdsp.dto;
 
+import com.google.gson.Gson;
 import lombok.Data;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 
 @Data
@@ -42,6 +42,8 @@ public class Item {
 
     List<String> inputRecipeList;
 
+//    ItemCost itemCost;
+
     /**
      * @return true if the item can be used as fuel in the in-games fuel consumers
      */
@@ -49,7 +51,10 @@ public class Item {
         return fuel != null && fuel.getType() != null && !fuel.getType().isBlank();
     }
 
-
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
+    }
 }
 
 
