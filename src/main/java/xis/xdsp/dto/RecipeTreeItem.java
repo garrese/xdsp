@@ -2,6 +2,7 @@ package xis.xdsp.dto;
 
 import com.google.gson.Gson;
 import lombok.*;
+import xis.xdsp.util.AppUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -16,22 +17,35 @@ public class RecipeTreeItem {
 
     public static final String ROOT_KEY = "root";
 
-    List<String> forkList = new ArrayList<>();
+//    List<String> forkList = new ArrayList<>();
+
+    String outputRecipeFork;
 
     transient RecipeTreeItem parent;
 
-    List<String> TreeMapKeys = new ArrayList<>();
+    List<String> TreeMapPath = new ArrayList<>();
 
     RecipeTreeItemCost item;
 
     /**
-     * RecipeKey from IemCost as key
+     * Key is item.recipeKey+"_"+index
      */
     LinkedHashMap<String, RecipeTreeItem> childMap = new LinkedHashMap<>();
 
     public void addChild(RecipeTreeItem child) {
         child.setParent(this);
-        getChildMap().put(child.getItem().getRecipeKey(), child);
+
+        String key = child.getItem().getRecipeKey();
+        if (child.getOutputRecipeFork() != null) {
+            key += "_" + child.getOutputRecipeFork();
+        }
+
+        List<String> childTreeMapPath = new ArrayList<>(getTreeMapPath());
+        childTreeMapPath.add(key);
+        child.setTreeMapPath(childTreeMapPath);
+
+        AppUtil.securePut(getChildMap(), key, child);
+
     }
 
     public RecipeTreeItem getRoot() {
@@ -52,16 +66,30 @@ public class RecipeTreeItem {
 
 
     /**
-     * Gets the RecipeTreeItem copy without parent and out of it
+     * Gets the RecipeTreeItem copy without parent and out of it.
      */
     public RecipeTreeItem getCopy() {
         RecipeTreeItem copy = new RecipeTreeItem();
-        copy.setForkList(new ArrayList<>(forkList));
+//        copy.setForkList(new ArrayList<>(forkList));
         copy.setItem(item.getCopy());
         for (Map.Entry<String, RecipeTreeItem> itemEntry : getChildMap().entrySet()) {
             copy.getChildMap().put(itemEntry.getKey(), itemEntry.getValue().getCopy());
         }
         return copy;
+    }
+
+    public RecipeTreeItem createFork(String outputRecipeFork) {
+
+        RecipeTreeItem mainBranch = getThisMainBranch();
+        RecipeTreeItem fork = mainBranch.getCopy();
+//        fork.getForkList().add(outputRecipeKey);
+//        fork.addChild(outputRecipeTreeItem);
+
+        RecipeTreeItem forkEquivalentNode = navigate(fork, fork.getTreeMapPath());
+        forkEquivalentNode.setOutputRecipeFork(outputRecipeFork);
+        getRoot().addChild(fork);
+
+        return fork;
     }
 
     /**
@@ -73,11 +101,12 @@ public class RecipeTreeItem {
         for (int i = 1; i < treeMapKeys.size(); i++) {
             lastFound = lastFound.getChildMap().get(treeMapKeys.get(i));
             if (lastFound == null) {
-                return null;
+                throw new IllegalArgumentException("treeMapKeys not found");
             }
         }
         return lastFound;
     }
+
 
     @Override
     public String toString() {

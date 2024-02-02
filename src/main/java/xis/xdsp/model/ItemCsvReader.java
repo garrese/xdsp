@@ -5,7 +5,6 @@ import xis.xdsp.dto.ItemMap;
 import xis.xdsp.util.AppUtil;
 import xis.xdsp.util.CsvReader;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ItemCsvReader extends CsvReader {
@@ -35,7 +34,7 @@ public class ItemCsvReader extends CsvReader {
             while (line < lineList.size()) {
                 List<String> colList = lineList.get(line);
                 Item item = readCsvCols(colList);
-                itemMap.put(item.getAbb(), item);
+                AppUtil.securePut(itemMap,item.getAbb(),item);
                 line++;
             }
         } catch (Exception e) {

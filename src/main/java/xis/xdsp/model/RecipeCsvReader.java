@@ -7,7 +7,6 @@ import xis.xdsp.util.AppUtil;
 import xis.xdsp.util.CsvReader;
 
 import java.text.ParseException;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import static xis.xdsp.util.AppUtil.isBlank;
@@ -60,7 +59,7 @@ public class RecipeCsvReader extends CsvReader {
             while (line < lineList.size()) {
                 List<String> colList = lineList.get(line);
                 Recipe recipe = readCsvCols(colList);
-                recipeMap.put(recipe.getCode(), recipe);
+                AppUtil.securePut(recipeMap, recipe.getCode(), recipe);
                 line++;
             }
         } catch (Exception e) {
@@ -110,7 +109,7 @@ public class RecipeCsvReader extends CsvReader {
 
     private void addTransput(TransputMap transputMap, String openTransput, String val) throws ParseException {
         if (!isBlank(openTransput) && !isBlank(val)) {
-            transputMap.put(openTransput, parseDouble(val));
+            AppUtil.securePut(transputMap,openTransput,parseDouble(val));
         }
     }
 
