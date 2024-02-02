@@ -49,9 +49,19 @@ public class DataCalculator {
     public static void calcRecipesItemCostTree() {
         Memory.RECIPES.values().forEach(recipe -> {
             System.out.println("[DataCalculator.calcRecipesItemCostTree] INI " + recipe.getName());
-            RecipeTreeItem recipeTreeItem = new RecipeTreeItem();
-            recipeTreeItem.setCost(new RecipeTreeItemCost(null, 1d, recipe.getCode()));
-            recipe.setRecipeTreeItem(calcRecipeCostTree(recipe, 1, recipeTreeItem));
+
+
+            RecipeTreeItem rootItem = new RecipeTreeItem();
+            rootItem.setItem(new RecipeTreeItemCost(null, null, "root"));
+
+            RecipeTreeItem recipeItem = new RecipeTreeItem();
+            recipeItem.setItem(new RecipeTreeItemCost(null, 1d, recipe.getCode()));
+            rootItem.addChild(recipeItem);
+
+            calcRecipeCostTree(recipe, 1, recipeItem);
+
+            recipe.setRecipeTreeItem(rootItem);
+
             System.out.println("[DataCalculator.calcRecipesItemCostTree] FIN " + recipe.getName() + " => " + recipe.getRecipeTreeItem());
         });
     }
@@ -92,8 +102,11 @@ public class DataCalculator {
 //        if (recipe.getName().equals("Supersonic Missile Set")) return new RecipeCostTree();
 
         if(recipe.getCode().equals("Gr-Sm")){
-            System.out.println("break point here");
+            System.out.println("break-point here");
         }
+
+        //TODO las ramas nuevas tienen que tener key de child diferente
+        //TODO hay que copiar las ramas nuevas antes de añadir cada variante
 
         TransputMap itemCost = recipe.getItemCost();
         for (Map.Entry<String, Double> inputCost : itemCost.entrySet()) {
@@ -108,14 +121,16 @@ public class DataCalculator {
                 RecipeTreeItem outputRecipeTreeItem = new RecipeTreeItem();
                 outputRecipeTreeItem.setTreeMapKeys(new ArrayList<>(recipeTreeItem.getTreeMapKeys()));
                 outputRecipeTreeItem.getTreeMapKeys().add(outputRecipeKey);
-                outputRecipeTreeItem.setCost(new RecipeTreeItemCost(inputCost.getKey(), inputAmount, outputRecipe.getCode()));
+                outputRecipeTreeItem.setItem(new RecipeTreeItemCost(inputCost.getKey(), inputAmount, outputRecipe.getCode()));
 
                 if (alternativeRecipe == 0) {
                     recipeTreeItem.addChild(outputRecipeTreeItem);
                 } else {
-                    RecipeTreeItem thisMainBranchCopy = recipeTreeItem.getThisMainBranch().getCopy();
+                    RecipeTreeItem thisMainBranch = recipeTreeItem.getThisMainBranch();
+                    RecipeTreeItem thisMainBranchCopy = thisMainBranch.getCopy();
                     thisMainBranchCopy.getForkList().add(outputRecipeKey);
                     thisMainBranchCopy.addChild(outputRecipeTreeItem);
+                    recipeTreeItem.getRoot().addChild(thisMainBranchCopy);
 
                     RecipeTreeItem.navigate(thisMainBranchCopy,outputRecipeTreeItem.getTreeMapKeys());
                 }

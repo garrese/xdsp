@@ -1,7 +1,6 @@
 package xis.xdsp.dto;
 
 import com.google.gson.Gson;
-import com.sun.source.tree.Tree;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -15,13 +14,15 @@ import java.util.Map;
 //@ToString
 public class RecipeTreeItem {
 
+    public static final String ROOT_KEY = "root";
+
     List<String> forkList = new ArrayList<>();
 
     transient RecipeTreeItem parent;
 
     List<String> TreeMapKeys = new ArrayList<>();
 
-    RecipeTreeItemCost cost;
+    RecipeTreeItemCost item;
 
     /**
      * RecipeKey from IemCost as key
@@ -30,32 +31,33 @@ public class RecipeTreeItem {
 
     public void addChild(RecipeTreeItem child) {
         child.setParent(this);
-        getChildMap().put(child.getCost().getRecipeKey(), child);
+        getChildMap().put(child.getItem().getRecipeKey(), child);
     }
 
     public RecipeTreeItem getRoot() {
         if (parent == null) {
             return this;
         } else {
-            return getRoot();
+            return getParent().getRoot();
         }
     }
 
     public RecipeTreeItem getThisMainBranch() {
-        RecipeTreeItem root = getRoot();
-        return root.getChildMap().get(getTreeMapKeys().getFirst());
+        if (parent != null && parent.getItem().getRecipeKey().equals(ROOT_KEY)) {
+            return this;
+        } else {
+            return getParent().getThisMainBranch();
+        }
     }
 
+
     /**
-     * Copy with  the same parent
-     *
-     * @return
+     * Gets the RecipeTreeItem copy without parent and out of it
      */
     public RecipeTreeItem getCopy() {
         RecipeTreeItem copy = new RecipeTreeItem();
         copy.setForkList(new ArrayList<>(forkList));
-        copy.setParent(parent);
-        copy.setCost(cost.getCopy());
+        copy.setItem(item.getCopy());
         for (Map.Entry<String, RecipeTreeItem> itemEntry : getChildMap().entrySet()) {
             copy.getChildMap().put(itemEntry.getKey(), itemEntry.getValue().getCopy());
         }
