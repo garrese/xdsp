@@ -1,6 +1,6 @@
 package xis.xdsp;
 
-import xis.xdsp.dto.RecipeTreeItemCost;
+import xis.xdsp.dto.RecipeTreeCost;
 import xis.xdsp.model.*;
 import xis.xdsp.system.Memory;
 import xis.xdsp.util.AppUtil;
@@ -10,7 +10,7 @@ public class App {
     public static void main(String[] args) throws Exception {
 
 
-        RecipeTreeItemCost chip = new RecipeTreeItemCost();
+        RecipeTreeCost chip = new RecipeTreeCost();
 
 
 //        circ -> Ir,1 ; Co,1

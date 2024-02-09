@@ -1,16 +1,15 @@
 package xis.xdsp.dto;
 
-import com.google.gson.Gson;
 import lombok.Data;
 
 
 @Data
-public class RecipeTreeItemCost {
+public class RecipeTreeCost {
 
-    public RecipeTreeItemCost() {
+    public RecipeTreeCost() {
     }
 
-    public RecipeTreeItemCost(String itemKey, Double amount, String recipeKey) {
+    public RecipeTreeCost(String itemKey, Double amount, String recipeKey) {
         this.itemKey = itemKey;
         this.amount = amount;
         this.recipeKey = recipeKey;
@@ -22,8 +21,8 @@ public class RecipeTreeItemCost {
 
     String recipeKey;
 
-    public RecipeTreeItemCost getCopy() {
-        return new RecipeTreeItemCost(itemKey, amount, recipeKey);
+    public RecipeTreeCost getCopy() {
+        return new RecipeTreeCost(itemKey, amount, recipeKey);
     }
 
 //    @Override

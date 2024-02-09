@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static xis.xdsp.dto.RecipeTreeNode.ROOT_NAME;
+
 public class DataCalculator {
 
 
@@ -53,21 +55,24 @@ public class DataCalculator {
 
             try {
 
-                RecipeTreeItem rootItem = new RecipeTreeItem();
-                rootItem.setItem(new RecipeTreeItemCost(null, null, "root"));
+                RecipeTreeNode root = new RecipeTreeNode();
+                root.setName(ROOT_NAME);
 
-                RecipeTreeItem recipeItem = new RecipeTreeItem();
-                recipeItem.setItem(new RecipeTreeItemCost(null, 1d, recipe.getCode()));
-                rootItem.addChild(recipeItem);
+                RecipeTreeNode recipeNode = new RecipeTreeNode();
+                recipeNode.setCost(new RecipeTreeCost(null, 1d, recipe.getCode()));
+                recipeNode.generateName();
+                root.addChild(recipeNode);
 
-                calcRecipeCostTree(recipe, 1, recipeItem);
+                calcRecipeCostTree(recipe, 1, recipeNode);
 
-                recipe.setRecipeTreeItem(rootItem);
+                recipe.setRecipeTreeNode(root);
 
-                System.out.println("[DataCalculator.calcRecipesItemCostTree] FIN " + recipe.getName() + " => " + recipe.getRecipeTreeItem());
+                System.out.println("[DataCalculator.calcRecipesItemCostTree] FIN " + recipe.getName() + " => " + recipe.getRecipeTreeNode());
             } catch (Exception e) {
                 System.out.println("[DataCalculator.calcRecipesItemCostTree] ERROR " + recipe.getName() + ". " + e.getClass().getSimpleName() + ":" + e.getMessage());
-//                e.printStackTrace();
+                if(recipe.getName().equals("Graphene")) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -103,45 +108,49 @@ public class DataCalculator {
 //                                                      Hay que guardar los totales con las referencias. Guardar el árbol no tiene sentido, ya puedo recorrer las dependencias con la estructura en memoria
 //                                                      En verdad no haría falta guardar nada? tôdo se puede calcular en el momento.
 
-    public static RecipeTreeItem calcRecipeCostTree(Recipe recipe, double amount, RecipeTreeItem recipeTreeItem) throws Exception {
+    public static RecipeTreeNode calcRecipeCostTree(Recipe recipe, double amount, RecipeTreeNode recipeTreeNode) throws Exception {
 //        System.out.println("[DataCalculator.calcRecipeCostTree] INI (" + recipe.getName() + "," + amount + "," + recipeCostTree + ")");
 //        if (recipe.getName().equals("Supersonic Missile Set")) return new RecipeCostTree();
 
         if (recipe.getCode().equals("Gr-Sm")) {
-            System.out.println("break-point here");
+//            System.out.println("break-point here");
         }
 
-
-        RecipeTreeItem root = recipeTreeItem.getRoot();
+        RecipeTreeNode root = recipeTreeNode.getRoot();
         TransputMap itemCost = recipe.getItemCost();
         for (Map.Entry<String, Double> inputCost : itemCost.entrySet()) {
             Item item = Memory.ITEMS.get(inputCost.getKey());
 
+            if(inputCost.getKey().equals("Oil")){
+                System.out.println("break-point here");
+            }
+
             List<String> outputRecipeList = item.getOutputRecipeList();
-            List<RecipeTreeItem> branches = new ArrayList<>();
-            branches.add(recipeTreeItem);
+            List<RecipeTreeNode> branches = new ArrayList<>();
+            branches.add(recipeTreeNode);
             if (outputRecipeList.size() > 1) {
 
                 for (int i = 1; i < outputRecipeList.size(); i++) {
-                    RecipeTreeItem alternativeBranch = recipeTreeItem.createFork(outputRecipeList.get(i));
+                    RecipeTreeNode alternativeBranch = recipeTreeNode.createFork(outputRecipeList.get(i));
                     branches.add(alternativeBranch);
                 }
             }
 
             int alternativeRecipe = 0;
 //            for (String outputRecipeKey : item.getOutputRecipeList()) {
-            for (int i = 0; i < outputRecipeList.size(); i++) {
+            for (int i = 0; i < branches.size(); i++) {
 //                if (outputRecipeKey.equals("PlasRef-Refi")) break;
                 Recipe outputRecipe = Memory.RECIPES.get(outputRecipeList.get(i));
                 double inputAmount = amount * inputCost.getValue();
 
-                RecipeTreeItem outputRecipeTreeItem = new RecipeTreeItem();
+                RecipeTreeNode outputRecipeTreeNode = new RecipeTreeNode();
 //                outputRecipeTreeItem.setTreeMapPath(new ArrayList<>(recipeTreeItem.getTreeMapPath()));
 //                outputRecipeTreeItem.getTreeMapPath().add(outputRecipeList.get(i));
-                outputRecipeTreeItem.setItem(new RecipeTreeItemCost(inputCost.getKey(), inputAmount, outputRecipe.getCode()));
+                outputRecipeTreeNode.setCost(new RecipeTreeCost(inputCost.getKey(), inputAmount, outputRecipe.getCode()));
+                outputRecipeTreeNode.generateName();
 
 //                root.getChildMap().get()
-                branches.get(i).addChild(outputRecipeTreeItem);
+                branches.get(i).addChild(outputRecipeTreeNode);
 
                 if (i == 0) {
 //                    recipeTreeItem.addChild(outputRecipeTreeItem);
@@ -153,13 +162,13 @@ public class DataCalculator {
                 }
 
                 if (!outputRecipe.isSource()) {
-                    calcRecipeCostTree(outputRecipe, amount * inputAmount, outputRecipeTreeItem);
+                    calcRecipeCostTree(outputRecipe, amount * inputAmount, outputRecipeTreeNode);
                 }
 //                System.out.println("outputRecipeKey=" + outputRecipeKey + ", recipeCostTree.getCost=" + recipeCostTree.getCost());
             }
         }
 
-        return recipeTreeItem;
+        return recipeTreeNode;
     }
 
 
