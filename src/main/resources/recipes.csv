@@ -1,4 +1,4 @@
-;;;;OUT 1;;OUT 2;;;;;IN 1;;IN 2;;IN 3;;IN 4;;IN 5;;IN 6
+;;;OUT 1;;;OUT 2;;;IN 1;;IN 2;;IN 3;;IN 4;;IN 5;;IN 6;;IN 6
 Name;with;Code;Abb;Qty;Abb;Qty;time;Abb;Qty;Abb;Qty;Abb;Qty;Abb;Qty;Abb;Qty;Abb;Qty;;
 Iron Ingot;Sm;Ir-Sm;Ir;1;;;1;IrO;1;;;;;;;;;;;;
 Copper Ingot;Sm;Co-Sm;Co;1;;;1;CoO;1;;;;;;;;;;;;
@@ -20,7 +20,7 @@ Crystal Silicon;Sm;CrSil-Sm;CrSil;1;;;2;Sil;1;;;;;;;;;;;;
 Titanium Alloy;Sm;All-Sm;All;4;;;12;Tit;4;St;4;Acid;8;;;;;;;;
 Glass;Sm;Gl-Sm;Gl;1;;;2;Stn;2;;;;;;;;;;;;
 Diamond;Sm;Dmd-Sm;Dmd;1;;;2;EGr;1;;;;;;;;;;;;
-X-ray Cracking;Refi;XRayCrac-Refi;H;3;EGr;;4;Oil;1;H;2;;;;;;;;;;
+X-ray Cracking;Refi;XRayCrac-Refi;H;3;EGr;1;4;Oil;1;H;2;;;;;;;;;;
 Graphene (advanced);Chem;Gr-Chem(a);Gr;2;H;1;2;Ice;2;;;;;;;;;;;;
 Organic Crystal;Chem;OCr-Chem;OCr;1;;;6;Plc;2;Oil;1;Wat;1;;;;;;;;
 Combustible Unit;As;Comb-As;Comb;1;;;3;C;3;;;;;;;;;;;;
@@ -48,7 +48,7 @@ Silicon Ore;Sm;SilO-Sm;SilO;1;;;10;Stn;10;;;;;;;;;;;;
 Circuit Board;As;Circ-As;Circ;2;;;1;Ir;2;Co;1;;;;;;;;;;
 Graviton GLen;As;GLen-As;GLen;1;;;6;Dmd;4;SMat;1;;;;;;;;;;
 Sulfuric Acid;Chem;Acid-Chem;Acid;4;;;6;Oil;6;Stn;8;Wat;4;;;;;;;;
-Deuterium Fractionation;Frtr;D-Frtr;D;1;H;99;0;H;100;;;;;;;;;;;;
+Deuterium Fractionation;Frtr;D-Frtr;D;1;;;0;H;1;;;;;;;;;;;;
 Carbon Nanotube;Chem;NTube-Chem;NTube;2;;;4;Gr;3;Tit;1;;;;;;;;;;
 Strange Matter;Coll;SMat-Coll;SMat;1;;;8;Cont;2;Ir;2;H;10;;;;;;;;
 Logistics Bot;As;Bot-As;Bot;1;;;2;Ir;2;Eng;1;Proc;1;;;;;;;;
