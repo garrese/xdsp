@@ -16,17 +16,16 @@ public class RecipeTreeNode {
 
     public static final String ROOT_NAME = "root";
 
-//    List<String> forkList = new ArrayList<>();
-
     String name;
-
-    String outputRecipeFork;
 
     transient RecipeTreeNode parent;
 
     List<String> path = new ArrayList<>();
 
     RecipeTreeCost cost = new RecipeTreeCost();
+
+    List<String> recipeHistory = new ArrayList<>();
+    
 
 
     /**
@@ -56,11 +55,12 @@ public class RecipeTreeNode {
      */
     public RecipeTreeNode getCopy(String alternativeName) {
         RecipeTreeNode copy = new RecipeTreeNode();
-        copy.setCost(cost.getCopy());
+        copy.setCost(this.getCost().getCopy());
         copy.generateName(alternativeName);
+        copy.setRecipeHistory(new ArrayList<>(this.getRecipeHistory()));
 
         for (RecipeTreeNode child : getChildMap().values()) {
-            copy.addChild(child.getCopy(), false);
+            copy.addChild(child.getCopy(), false, false);
         }
         return copy;
     }
@@ -78,7 +78,7 @@ public class RecipeTreeNode {
         generateName(null);
     }
 
-    private void addChild(RecipeTreeNode child, boolean generatePath) {
+    private void addChild(RecipeTreeNode child, boolean generatePath, boolean generateRecipeHistory) {
         child.setParent(this);
         if (child.getName() == null) {
             throw new IllegalArgumentException("addChild: child name is null");
@@ -86,11 +86,14 @@ public class RecipeTreeNode {
         if (generatePath) {
             child.generatePath();
         }
+        if(generateRecipeHistory){
+            child.generateRecipeHistory();
+        }
         AppUtil.securePut(getChildMap(), child.getName(), child);
     }
 
     public void addChild(RecipeTreeNode child) {
-        addChild(child, true);
+        addChild(child, true, true);
     }
 
     private void generatePath() {
@@ -98,6 +101,13 @@ public class RecipeTreeNode {
             this.setPath(new ArrayList<>(getParent().getPath()));
         }
         this.getPath().add(this.getName());
+    }
+
+    private void generateRecipeHistory() {
+        if (parent != null && !ROOT_NAME.equals(parent.getName())) {
+            this.setRecipeHistory(new ArrayList<>(getParent().getRecipeHistory()));
+        }
+        this.getRecipeHistory().add(this.getCost().recipeKey);
     }
 
     public RecipeTreeNode createFork(String outputRecipeFork) {

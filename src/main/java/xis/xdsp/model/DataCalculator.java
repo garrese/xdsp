@@ -108,39 +108,40 @@ public class DataCalculator {
 //                                                      Hay que guardar los totales con las referencias. Guardar el árbol no tiene sentido, ya puedo recorrer las dependencias con la estructura en memoria
 //                                                      En verdad no haría falta guardar nada? tôdo se puede calcular en el momento.
 
-    public static RecipeTreeNode calcRecipeCostTree(Recipe recipe, double amount, RecipeTreeNode recipeTreeNode) throws Exception {
+    public static RecipeTreeNode calcRecipeCostTree(Recipe nodeRecipe, double amount, RecipeTreeNode recipeTreeNode) throws Exception {
 //        System.out.println("[DataCalculator.calcRecipeCostTree] INI (" + recipe.getName() + "," + amount + "," + recipeCostTree + ")");
 //        if (recipe.getName().equals("Supersonic Missile Set")) return new RecipeCostTree();
 
-        if (recipe.getCode().equals("Gr-Sm")) {
+        if (nodeRecipe.getCode().equals("Gr-Sm")) {
 //            System.out.println("break-point here");
         }
 
         RecipeTreeNode root = recipeTreeNode.getRoot();
-        TransputMap itemCost = recipe.getItemCost();
+        TransputMap itemCost = nodeRecipe.getItemCost();
         for (Map.Entry<String, Double> inputCost : itemCost.entrySet()) {
-            Item item = Memory.ITEMS.get(inputCost.getKey());
+            Item costItem = Memory.ITEMS.get(inputCost.getKey());
 
             if(inputCost.getKey().equals("Oil")){
-                System.out.println("break-point here");
+//                System.out.println("break-point here");
             }
 
-            List<String> outputRecipeList = item.getOutputRecipeList();
+            List<Recipe> costRecipeList = filterNonCircularRecipes(nodeRecipe, recipeTreeNode, costItem);
+
             List<RecipeTreeNode> branches = new ArrayList<>();
             branches.add(recipeTreeNode);
-            if (outputRecipeList.size() > 1) {
+            if (costRecipeList.size() > 1) {
 
-                for (int i = 1; i < outputRecipeList.size(); i++) {
-                    RecipeTreeNode alternativeBranch = recipeTreeNode.createFork(outputRecipeList.get(i));
+                for (int i = 1; i < costRecipeList.size(); i++) {
+                    RecipeTreeNode alternativeBranch = recipeTreeNode.createFork(costRecipeList.get(i).getCode());
                     branches.add(alternativeBranch);
                 }
             }
 
             int alternativeRecipe = 0;
 //            for (String outputRecipeKey : item.getOutputRecipeList()) {
-            for (int i = 0; i < branches.size(); i++) {
+            for (int i = 0; i < costRecipeList.size(); i++) {
 //                if (outputRecipeKey.equals("PlasRef-Refi")) break;
-                Recipe outputRecipe = Memory.RECIPES.get(outputRecipeList.get(i));
+                Recipe outputRecipe = costRecipeList.get(i);
                 double inputAmount = amount * inputCost.getValue();
 
                 RecipeTreeNode outputRecipeTreeNode = new RecipeTreeNode();
@@ -148,6 +149,7 @@ public class DataCalculator {
 //                outputRecipeTreeItem.getTreeMapPath().add(outputRecipeList.get(i));
                 outputRecipeTreeNode.setCost(new RecipeTreeCost(inputCost.getKey(), inputAmount, outputRecipe.getCode()));
                 outputRecipeTreeNode.generateName();
+                outputRecipeTreeNode.getRecipeHistory().add(outputRecipe.getCode());
 
 //                root.getChildMap().get()
                 branches.get(i).addChild(outputRecipeTreeNode);
@@ -155,7 +157,7 @@ public class DataCalculator {
                 if (i == 0) {
 //                    recipeTreeItem.addChild(outputRecipeTreeItem);
                 } else {
-                    System.out.println("break-point here");
+//                    System.out.println("break-point here");
 //                    RecipeTreeItem thisMainBranchCopy = recipeTreeItem.createFork();
 
 
@@ -171,6 +173,28 @@ public class DataCalculator {
         return recipeTreeNode;
     }
 
+    /**
+     * Discards recipes that cause circular loops.
+     * Discards same recipe and recipes with the costItem as inputs.
+     * Discards recipes in the RecipeTreeNode recipeHistory
+     */
+    private static List<Recipe> filterNonCircularRecipes(Recipe nodeRecipe, RecipeTreeNode recipeTreeNode, Item costItem) {
+        ArrayList<Recipe> result = new ArrayList<>();
+        List<Recipe> costRecipeList = costItem.getOutputRecipeList().stream().map(key -> Memory.RECIPES.get(key)).toList();
+        for(Recipe costRecipe : costRecipeList){
+            if(costRecipe.getCode().equals(nodeRecipe.getCode())){
+                break;
+            }
+            if(nodeRecipe.getOutputs().containsKey(costItem.getAbb())){
+                break;
+            }
+            if(recipeTreeNode.getRecipeHistory().contains(costRecipe.getCode())){
+                break;
+            }
+            result.add(costRecipe);
+        }
+        return result;
+    }
 
 
 }
