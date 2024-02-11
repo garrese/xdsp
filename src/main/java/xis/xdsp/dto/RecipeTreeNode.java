@@ -25,7 +25,8 @@ public class RecipeTreeNode {
     RecipeTreeCost cost = new RecipeTreeCost();
 
     List<String> recipeHistory = new ArrayList<>();
-    
+
+    List<String> tags;
 
 
     /**
@@ -58,6 +59,9 @@ public class RecipeTreeNode {
         copy.setCost(this.getCost().getCopy());
         copy.generateName(alternativeName);
         copy.setRecipeHistory(new ArrayList<>(this.getRecipeHistory()));
+        if (this.getTags() != null) {
+            copy.setTags(new ArrayList<>(this.getTags()));
+        }
 
         for (RecipeTreeNode child : getChildMap().values()) {
             copy.addChild(child.getCopy(), false, false);
@@ -70,7 +74,7 @@ public class RecipeTreeNode {
     }
 
     public void generateName(String alternativeName) {
-        String name = alternativeName == null ? this.getCost().getRecipeKey() : alternativeName;
+        String name = alternativeName == null ? cost.getRecipeKey() + "(" + cost.getItemKey() + ")" : alternativeName;
         this.name = name;
     }
 
@@ -86,7 +90,7 @@ public class RecipeTreeNode {
         if (generatePath) {
             child.generatePath();
         }
-        if(generateRecipeHistory){
+        if (generateRecipeHistory) {
             child.generateRecipeHistory();
         }
         AppUtil.securePut(getChildMap(), child.getName(), child);
@@ -112,17 +116,15 @@ public class RecipeTreeNode {
 
     public RecipeTreeNode createFork(String outputRecipeFork) {
         RecipeTreeNode root = getRoot();
-        int forkIndex = root.getChildMap().size() + 1;
         RecipeTreeNode mainBranch = getThisMainBranch();
+        String forkMainBranchName = composeMainBranchName(root, mainBranch);
 
-
-        String forkMainBranchName = mainBranch.getCost().getRecipeKey() + "_" + forkIndex;
         List<String> forkEquivalentPath = new ArrayList<>(this.getPath());
         forkEquivalentPath.removeFirst();
         forkEquivalentPath.addFirst(forkMainBranchName);
 
         RecipeTreeNode forkMainBranch = mainBranch.getCopy(forkMainBranchName);
-        root.addChild(forkMainBranch);
+        root.addChild(forkMainBranch, true, false);
         forkMainBranch.regenerateChildsPaths();
 
         RecipeTreeNode forkEquivalentNode = navigate(root, forkEquivalentPath);
@@ -154,6 +156,12 @@ public class RecipeTreeNode {
         return lastFound;
     }
 
+
+    public static String composeMainBranchName(RecipeTreeNode root, RecipeTreeNode mainBranch){
+        int forkIndex = root.getChildMap().size() + 1;
+        String mainBranchName = mainBranch.getCost().getRecipeKey() + "_" + forkIndex;
+        return mainBranchName;
+    }
 
     @Override
     public String toString() {

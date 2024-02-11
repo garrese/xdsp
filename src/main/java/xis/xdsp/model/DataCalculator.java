@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import static xis.xdsp.dto.RecipeTreeNode.ROOT_NAME;
+import static xis.xdsp.dto.RecipeTreeNode.composeMainBranchName;
 
 public class DataCalculator {
 
@@ -58,12 +59,13 @@ public class DataCalculator {
                 RecipeTreeNode root = new RecipeTreeNode();
                 root.setName(ROOT_NAME);
 
-                RecipeTreeNode recipeNode = new RecipeTreeNode();
-                recipeNode.setCost(new RecipeTreeCost(null, 1d, recipe.getCode()));
-                recipeNode.generateName();
-                root.addChild(recipeNode);
+                RecipeTreeNode mainBranchNode = new RecipeTreeNode();
+                mainBranchNode.setCost(new RecipeTreeCost(null, 1d, recipe.getCode()));
+                mainBranchNode.setName(composeMainBranchName(root,mainBranchNode));
+                mainBranchNode.setTags(new ArrayList<>());
+                root.addChild(mainBranchNode);
 
-                calcRecipeCostTree(recipe, 1, recipeNode);
+                calcRecipeCostTree(recipe, 1, mainBranchNode);
 
                 recipe.setRecipeTreeNode(root);
 
@@ -125,11 +127,16 @@ public class DataCalculator {
 //                System.out.println("break-point here");
             }
 
+            if(nodeRecipe.getCode().equals("RefRef-Refi")&&recipeTreeNode.getName().equals("RefRef-Refi")&&costItem.getAbb().equals("H")){
+//                System.out.println("br");
+            }
+
             List<Recipe> costRecipeList = filterNonCircularRecipes(nodeRecipe, recipeTreeNode, costItem);
 
             List<RecipeTreeNode> branches = new ArrayList<>();
             branches.add(recipeTreeNode);
-            if (costRecipeList.size() > 1) {
+            boolean areAlternativeRecipes = costRecipeList.size() > 1;
+            if (areAlternativeRecipes) {
 
                 for (int i = 1; i < costRecipeList.size(); i++) {
                     RecipeTreeNode alternativeBranch = recipeTreeNode.createFork(costRecipeList.get(i).getCode());
@@ -137,36 +144,30 @@ public class DataCalculator {
                 }
             }
 
-            int alternativeRecipe = 0;
-//            for (String outputRecipeKey : item.getOutputRecipeList()) {
             for (int i = 0; i < costRecipeList.size(); i++) {
-//                if (outputRecipeKey.equals("PlasRef-Refi")) break;
-                Recipe outputRecipe = costRecipeList.get(i);
+                RecipeTreeNode workingBranch = branches.get(i);
+                Recipe costRecipe = costRecipeList.get(i);
+
+                if (areAlternativeRecipes) {
+                    workingBranch.getThisMainBranch().getTags().add(costRecipe.getCode());
+                }
+
                 double inputAmount = amount * inputCost.getValue();
 
                 RecipeTreeNode outputRecipeTreeNode = new RecipeTreeNode();
-//                outputRecipeTreeItem.setTreeMapPath(new ArrayList<>(recipeTreeItem.getTreeMapPath()));
-//                outputRecipeTreeItem.getTreeMapPath().add(outputRecipeList.get(i));
-                outputRecipeTreeNode.setCost(new RecipeTreeCost(inputCost.getKey(), inputAmount, outputRecipe.getCode()));
+                outputRecipeTreeNode.setCost(new RecipeTreeCost(inputCost.getKey(), inputAmount, costRecipe.getCode()));
                 outputRecipeTreeNode.generateName();
-                outputRecipeTreeNode.getRecipeHistory().add(outputRecipe.getCode());
+                outputRecipeTreeNode.getRecipeHistory().add(costRecipe.getCode());
 
-//                root.getChildMap().get()
-                branches.get(i).addChild(outputRecipeTreeNode);
+//                try {
+                    workingBranch.addChild(outputRecipeTreeNode);
+//                }catch (Exception e){
+//                    System.out.println("br");
+//                }
 
-                if (i == 0) {
-//                    recipeTreeItem.addChild(outputRecipeTreeItem);
-                } else {
-//                    System.out.println("break-point here");
-//                    RecipeTreeItem thisMainBranchCopy = recipeTreeItem.createFork();
-
-
+                if (!costRecipe.isSource()) {
+                    calcRecipeCostTree(costRecipe, amount * inputAmount, outputRecipeTreeNode);
                 }
-
-                if (!outputRecipe.isSource()) {
-                    calcRecipeCostTree(outputRecipe, amount * inputAmount, outputRecipeTreeNode);
-                }
-//                System.out.println("outputRecipeKey=" + outputRecipeKey + ", recipeCostTree.getCost=" + recipeCostTree.getCost());
             }
         }
 
@@ -185,9 +186,9 @@ public class DataCalculator {
             if(costRecipe.getCode().equals(nodeRecipe.getCode())){
                 break;
             }
-            if(nodeRecipe.getOutputs().containsKey(costItem.getAbb())){
-                break;
-            }
+//            if(nodeRecipe.getOutputs().containsKey(costItem.getAbb())){
+//                break;
+//            }
             if(recipeTreeNode.getRecipeHistory().contains(costRecipe.getCode())){
                 break;
             }
