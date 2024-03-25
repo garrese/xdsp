@@ -2,6 +2,8 @@ package xis.xdsp.dto;
 
 import lombok.Data;
 
+import java.util.Objects;
+
 @Data
 public class Recipe {
 
@@ -59,4 +61,19 @@ public class Recipe {
 //        return new Gson().toJson(this);
 //    }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Recipe recipe = (Recipe) o;
+        return Objects.equals(name, recipe.name) && Objects.equals(with, recipe.with)
+                && Objects.equals(code, recipe.code) && Objects.equals(outputs, recipe.outputs)
+                && Objects.equals(time, recipe.time) && Objects.equals(inputs, recipe.inputs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, with, code, outputs, time, inputs);
+    }
 }

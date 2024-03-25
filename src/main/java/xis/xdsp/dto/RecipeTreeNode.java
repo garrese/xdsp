@@ -4,9 +4,7 @@ import com.google.gson.Gson;
 import lombok.*;
 import xis.xdsp.util.AppUtil;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -20,13 +18,17 @@ public class RecipeTreeNode {
 
     transient RecipeTreeNode parent;
 
-    List<String> path = new ArrayList<>();
+    ArrayList<String> path = new ArrayList<>();
 
     RecipeTreeCost cost = new RecipeTreeCost();
 
-    List<String> recipeHistory = new ArrayList<>();
+    ArrayList<String> recipeHistory = new ArrayList<>();
 
-    List<String> tags;
+    ArrayList<String> recipeExclusions;
+//
+//    List<String> tags;
+
+    LinkedHashSet<String> alternativeRecipes;
 
 
     /**
@@ -42,11 +44,11 @@ public class RecipeTreeNode {
         }
     }
 
-    public RecipeTreeNode getThisMainBranch() {
+    public RecipeTreeNode getMainBranch() {
         if (parent != null && parent.getName().equals(ROOT_NAME)) {
             return this;
         } else {
-            return getParent().getThisMainBranch();
+            return getParent().getMainBranch();
         }
     }
 
@@ -59,8 +61,14 @@ public class RecipeTreeNode {
         copy.setCost(this.getCost().getCopy());
         copy.generateName(alternativeName);
         copy.setRecipeHistory(new ArrayList<>(this.getRecipeHistory()));
-        if (this.getTags() != null) {
-            copy.setTags(new ArrayList<>(this.getTags()));
+//        if (this.getTags() != null) {
+//            copy.setTags(new ArrayList<>(this.getTags()));
+//        }
+        if (this.getRecipeExclusions() != null) {
+            copy.setRecipeExclusions(new ArrayList<>(this.getRecipeExclusions()));
+        }
+        if (this.getAlternativeRecipes() != null) {
+            copy.setAlternativeRecipes(new LinkedHashSet<>(this.getAlternativeRecipes()));
         }
 
         for (RecipeTreeNode child : getChildMap().values()) {
@@ -114,9 +122,9 @@ public class RecipeTreeNode {
         this.getRecipeHistory().add(this.getCost().recipeKey);
     }
 
-    public RecipeTreeNode createFork(String outputRecipeFork) {
+    public RecipeTreeNode createFork() {
         RecipeTreeNode root = getRoot();
-        RecipeTreeNode mainBranch = getThisMainBranch();
+        RecipeTreeNode mainBranch = getMainBranch();
         String forkMainBranchName = composeMainBranchName(root, mainBranch);
 
         List<String> forkEquivalentPath = new ArrayList<>(this.getPath());
@@ -161,6 +169,34 @@ public class RecipeTreeNode {
         int forkIndex = root.getChildMap().size() + 1;
         String mainBranchName = mainBranch.getCost().getRecipeKey() + "_" + forkIndex;
         return mainBranchName;
+    }
+
+    public void addRecipeExclusion(String exclude) {
+        if (getRecipeExclusions() == null) {
+            setRecipeExclusions(new ArrayList<>());
+        }
+        getRecipeExclusions().add(exclude);
+    }
+
+//    public void addTag(String tag) {
+//        if (getTags() == null) {
+//            setTags(new ArrayList<>());
+//        }
+//        getTags().add(tag);
+//    }
+
+    public void addAlternativeRecipeList(List<String> alternativeRecipes) {
+        if (getAlternativeRecipes() == null) {
+            setAlternativeRecipes(new LinkedHashSet<>());
+        }
+        getAlternativeRecipes().addAll(alternativeRecipes);
+    }
+
+    public void addAlternativeRecipe(String alternativeRecipes) {
+        if (getAlternativeRecipes() == null) {
+            setAlternativeRecipes(new LinkedHashSet<>());
+        }
+        getAlternativeRecipes().add(alternativeRecipes);
     }
 
     @Override
