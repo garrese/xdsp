@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 
 import java.util.LinkedHashMap;
 
+/**
+ * Map of [Recipe Key, Recipe]
+ */
 public class RecipeMap extends LinkedHashMap<String, Recipe> {
 
     @Override

@@ -1,6 +1,7 @@
 package xis.xdsp.model;
 
 import xis.xdsp.dto.*;
+import xis.xdsp.ex.RecipeAltSeqException;
 import xis.xdsp.system.Memory;
 import xis.xdsp.util.AppUtil;
 
@@ -49,6 +50,23 @@ public class DataCalculator {
     }
 
     public static void calcRecipesItemCostTree() {
+
+        RecipeAltSeqMap recipeAltSeqMap = new RecipeAltSeqMap();
+        recipeAltSeqMap.put("EGr", "EGr-Sm");
+        recipeAltSeqMap.put("Acid", "Acid-Chem");
+        recipeAltSeqMap.put("Oil","PlasRef-Refi");
+        recipeAltSeqMap.put("Dmd","Dmd-Sm");
+        recipeAltSeqMap.put("OCr","OCr-Chem");
+        recipeAltSeqMap.put("Gr","Gr-Sm");
+        recipeAltSeqMap.put("Cont","Cont-As");
+        recipeAltSeqMap.put("H","H-Orb");
+        recipeAltSeqMap.put("NTube","NTube-Chem");
+        recipeAltSeqMap.put("Cas","Cas-As");
+        recipeAltSeqMap.put("PhC","PhC-As");
+        recipeAltSeqMap.put("D","D-Frtr");
+        recipeAltSeqMap.put("CrSil","CrSil-Sm");
+
+
         Memory.RECIPES.values().forEach(recipe -> {
             System.out.println("[DataCalculator.calcRecipesItemCostTree] INI " + recipe.getName());
 
@@ -62,15 +80,15 @@ public class DataCalculator {
                 mainBranchNode.setName(composeMainBranchName(root, mainBranchNode));
                 root.addChild(mainBranchNode);
 
-                calcRecipeCostTree(recipe, 1, mainBranchNode);
+                calcRecipeSequences(recipe, 1, mainBranchNode, recipeAltSeqMap);
 
-                recipe.setRecipeTreeNode(root);
+//                recipe.setRecipeTreeNode(root);
 
-                System.out.println("[DataCalculator.calcRecipesItemCostTree] FIN " + recipe.getName() + " => " + recipe.getRecipeTreeNode());
+                System.out.println("[DataCalculator.calcRecipesItemCostTree] FIN " + recipe.getName() + " => " + root);
             } catch (Exception e) {
                 System.out.println("[DataCalculator.calcRecipesItemCostTree] ERROR " + recipe.getName() + ". " + e.getClass().getSimpleName() + ":" + e.getMessage());
                 if (recipe.getName().equals("Graphene")) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
             }
         });
@@ -100,83 +118,57 @@ public class DataCalculator {
         return result;
     }
 
-
-    //        circ -> Ir,1 ; Co,1
-//            -> [Ir out recipes], [Co out recipes]
-//              -> 1x<recipeCost> [Ir out recipe1]  <<< es el 1x<recipeCost> para outRecipe1 lo que tengo que almacenar. Por lo que cada item tendrá su arbol único personal con sus totales
-//                                                      Hay que guardar los totales con las referencias. Guardar el árbol no tiene sentido, ya puedo recorrer las dependencias con la estructura en memoria
-//                                                      En verdad no haría falta guardar nada? tôdo se puede calcular en el momento.
-
-    public static RecipeTreeNode calcRecipeCostTree(Recipe nodeRecipe, double amount, RecipeTreeNode currentNode) throws Exception {
+    public static RecipeTreeNode calcRecipeSequences(Recipe nodeRecipe, double amount, RecipeTreeNode currentNode, Map<String, RecipeAltSeq> altSeqMap) throws Exception {
 //        System.out.println("[DataCalculator.calcRecipeCostTree] INI (" + recipe.getName() + "," + amount + "," + recipeCostTree + ")");
 //        if (recipe.getName().equals("Supersonic Missile Set")) return new RecipeCostTree();
 
         if (nodeRecipe.getCode().equals("Gr-Sm")) {
-            System.out.println("break-point here");
+//            System.out.println("break-point here");
         }
-
-        List<RecipeTreeNode> forkList = new ArrayList<>();
 
         RecipeTreeNode root = currentNode.getRoot();
-        TransputMap itemCost = nodeRecipe.getItemCost();
+        TransputMap nodeItemCost = nodeRecipe.getItemCost();
 
-        Map<String, Recipe> selectedRecipeMap = new HashMap<>();
+        for (Map.Entry<String, Double> nodeItemCostEntry : nodeItemCost.entrySet()) {
+            Item costItem = Memory.ITEMS.get(nodeItemCostEntry.getKey());
+            List<String> costRecipeList = costItem.getOutputRecipeList();
+            RecipeMap costRecipeMap = Memory.getRecipeMap(costRecipeList);
+            List<Recipe> filteredRecipeList = new ArrayList<>(costRecipeMap.values());
 
-        for (Map.Entry<String, Double> itemCostEntry : itemCost.entrySet()) {
-            Item costItem = Memory.ITEMS.get(itemCostEntry.getKey());
-
-            if (itemCostEntry.getKey().equals("Oil")) {
+            if (costItem.getAbb().equals("EGr")) {
 //                System.out.println("break-point here");
             }
-            if (nodeRecipe.getCode().equals("RefRef-Refi") && currentNode.getName().equals("RefRef-Refi") && costItem.getAbb().equals("H")) {
-//                System.out.println("br");
+
+            filteredRecipeList = filterNonCircularRecipes(nodeRecipe, currentNode, filteredRecipeList);
+            filteredRecipeList = filterExcludedRecipes(currentNode, filteredRecipeList);
+//            filteredRecipeList = filterNonSourcesFirst(filteredRecipeList);
+
+            Recipe selectedCostRecipe;
+            int alternativeRecipes = filteredRecipeList.size();
+            if (alternativeRecipes == 1) {
+                selectedCostRecipe = filteredRecipeList.getFirst();
+            } else if (alternativeRecipes > 1) {
+                if (altSeqMap == null || altSeqMap.get(costItem.getAbb()) == null) {
+                    throw new RuntimeException("No alternative sequence map for [" + costItem.getAbb() + "] alternativeRecipes: "
+                            + filteredRecipeList.stream().map(Recipe::getCode).toList());
+                }
+                RecipeAltSeq itemAltSeq = altSeqMap.get(costItem.getAbb());
+                selectedCostRecipe = filterAlternatives(itemAltSeq, filteredRecipeList);
+            } else {
+                throw new RuntimeException("No recipes found for [" + costItem.getAbb() + "]");
             }
 
-            List<String> costRecipeList = costItem.getOutputRecipeList();
-            boolean areAlternativeRecipes = costRecipeList.size() > 1;
-
-            RecipeMap costRecipeMap = Memory.getRecipeMap(costRecipeList);
-            List<Recipe> recipeLeftList = new ArrayList<>(costRecipeMap.values());
-
-            recipeLeftList = filterNonCircularRecipes(nodeRecipe, currentNode, recipeLeftList);
-            recipeLeftList = filterExcludedRecipes(currentNode, recipeLeftList);
-
-            if(areAlternativeRecipes) {
-                root.addAlternativeRecipeList(recipeLeftList.stream().map(Recipe::getCode).toList());
-            }
-
-            Recipe selectedRecipe = extractAlternativeRecipe(recipeLeftList);
-            selectedRecipeMap.put(itemCostEntry.getKey(), selectedRecipe);
-            if(root.getAlternativeRecipes() != null && root.getAlternativeRecipes().contains(selectedRecipe.getCode())){
-                currentNode.addAlternativeRecipe(selectedRecipe.getCode());
-            }
-
-            for (int i = 0; i < recipeLeftList.size(); i++) {
-                RecipeTreeNode fork = currentNode.createFork();
-                forkList.add(fork);
-                RecipeTreeNode forkMain = fork.getMainBranch();
-                forkMain.addRecipeExclusion(selectedRecipe.getCode());
-            }
-        }
-
-        for (Map.Entry<String, Double> itemCostEntry : itemCost.entrySet()) {
-            Recipe selectedCostRecipe = selectedRecipeMap.get(itemCostEntry.getKey());
-
-            double inputAmount = amount * itemCostEntry.getValue();
+            double inputAmount = amount * nodeItemCostEntry.getValue();
             RecipeTreeNode childNode = new RecipeTreeNode();
-            childNode.setCost(new RecipeTreeCost(itemCostEntry.getKey(), inputAmount, selectedCostRecipe.getCode()));
+            childNode.setCost(new RecipeTreeCost(costItem.getAbb(), inputAmount, selectedCostRecipe.getCode()));
             childNode.generateName();
             childNode.getRecipeHistory().add(selectedCostRecipe.getCode());
 
             currentNode.addChild(childNode);
 
             if (!selectedCostRecipe.isSource()) {
-                calcRecipeCostTree(selectedCostRecipe, amount * inputAmount, childNode);
+                calcRecipeSequences(selectedCostRecipe, amount * inputAmount, childNode, altSeqMap);
             }
-        }
-
-        for(RecipeTreeNode fork: forkList){
-            calcRecipeCostTree(nodeRecipe, amount, fork);
         }
 
         return currentNode;
@@ -184,8 +176,6 @@ public class DataCalculator {
 
     /**
      * Discards recipes that cause circular loops.
-     * Discards same recipe and recipes with the costItem as inputs.
-     * Discards recipes in the RecipeTreeNode recipeHistory
      */
     private static List<Recipe> filterNonCircularRecipes(Recipe nodeRecipe, RecipeTreeNode recipeTreeNode, List<Recipe> costRecipeList) {
         ArrayList<Recipe> result = new ArrayList<>();
@@ -193,15 +183,33 @@ public class DataCalculator {
             if (costRecipe.getCode().equals(nodeRecipe.getCode())) {
                 break;
             }
-//            if(nodeRecipe.getOutputs().containsKey(costItem.getAbb())){
+//            A recipe can be repeated. For example, if one item that need plastic is made of another item of plastic.
+//            if (recipeTreeNode.getRecipeHistory().contains(costRecipe.getCode())) {
 //                break;
 //            }
-            if (recipeTreeNode.getRecipeHistory().contains(costRecipe.getCode())) {
-                break;
-            }
             result.add(costRecipe);
         }
         return result;
+    }
+
+    public static Recipe filterAlternatives(RecipeAltSeq recipeAltSeq, List<Recipe> alternativeRecipeList) throws RecipeAltSeqException {
+        try {
+            String next = recipeAltSeq.getNext();
+            for (Recipe recipe : alternativeRecipeList) {
+                if (next.equals(recipe.getCode())) {
+                    return recipe;
+                }
+            }
+            throw new RecipeAltSeqException("Next alternative sequence recipe (" + next + ") not found in alternatives: " + alternativeRecipeList);
+        } catch (RecipeAltSeqException e) {
+            boolean manualMode = false;
+            System.out.println("RecipeAltSeqException ex: " + e.getMessage());
+            if (manualMode) {
+                return new Recipe();
+            } else {
+                throw e;
+            }
+        }
     }
 
 //    private static List<Recipe> filterSources(List<Recipe> costRecipeList){
@@ -218,22 +226,22 @@ public class DataCalculator {
         }
     }
 
-    private static Recipe extractAlternativeRecipe(List<Recipe> alternativeRecipeList) {
-        Recipe extractedRecipe;
+    /**
+     * Select nonSources recipes before sources
+     */
+    private static List<Recipe> filterNonSourcesFirst(List<Recipe> alternativeRecipeList) {
         ArrayList<Recipe> nonSources = new ArrayList<>(alternativeRecipeList.stream().filter(r -> !r.isSource()).toList());
         if (!nonSources.isEmpty()) {
-            extractedRecipe = nonSources.getFirst();
+            return nonSources;
         } else {
-            extractedRecipe = alternativeRecipeList.getFirst();
+            return alternativeRecipeList;
         }
-        alternativeRecipeList.remove(extractedRecipe);
-        return extractedRecipe;
     }
 
     private static List<Recipe> filterExcludedRecipes(RecipeTreeNode recipeTreeNode, List<Recipe> costRecipeList) {
 
         RecipeTreeNode main = recipeTreeNode.getMainBranch();
-        if(main.getRecipeExclusions() == null){
+        if (main.getRecipeExclusions() == null || main.getRecipeExclusions().isEmpty()) {
             return costRecipeList;
         }
 

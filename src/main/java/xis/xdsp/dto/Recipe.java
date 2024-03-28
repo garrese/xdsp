@@ -49,11 +49,10 @@ public class Recipe {
      */
     TransputMap itemCost;
 
-    RecipeTreeNode recipeTreeNode;
+//    RecipeTreeNode recipeTreeNode;
 
     public boolean isSource() {
-        if (inputs.size() == 0) return true;
-        else return false;
+        return inputs.size() == 0;
     }
 
 //    @Override
