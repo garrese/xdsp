@@ -51,6 +51,8 @@ public class Recipe {
 
 //    RecipeTreeNode recipeTreeNode;
 
+    TransputMap sourcesCost;
+
     public boolean isSource() {
         return inputs.size() == 0;
     }

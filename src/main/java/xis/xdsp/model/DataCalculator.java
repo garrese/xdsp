@@ -4,6 +4,8 @@ import xis.xdsp.dto.*;
 import xis.xdsp.ex.RecipeAltSeqException;
 import xis.xdsp.system.Memory;
 import xis.xdsp.util.AppUtil;
+import xis.xdsp.util.ItemK;
+import xis.xdsp.util.RecipeK;
 
 import java.util.*;
 
@@ -49,27 +51,27 @@ public class DataCalculator {
         Memory.RECIPES.values().forEach(recipe -> recipe.setItemCost(DataCalculator.calcOneItemCost(recipe)));
     }
 
-    public static void calcRecipesItemCostTree() {
+    public static void calcResourcesCosts() {
 
         RecipeAltSeqMap recipeAltSeqMap = new RecipeAltSeqMap();
-        recipeAltSeqMap.put("EGr", "EGr-Sm");
-        recipeAltSeqMap.put("Acid", "Acid-Chem");
-        recipeAltSeqMap.put("Oil","PlasRef-Refi");
-        recipeAltSeqMap.put("Dmd","Dmd-Sm");
-        recipeAltSeqMap.put("OCr","OCr-Chem");
-        recipeAltSeqMap.put("Gr","Gr-Sm");
-        recipeAltSeqMap.put("Cont","Cont-As");
-        recipeAltSeqMap.put("H","H-Orb");
-        recipeAltSeqMap.put("NTube","NTube-Chem");
-        recipeAltSeqMap.put("Cas","Cas-As");
-        recipeAltSeqMap.put("PhC","PhC-As");
-        recipeAltSeqMap.put("D","D-Frtr");
-        recipeAltSeqMap.put("CrSil","CrSil-Sm");
+        recipeAltSeqMap.put(ItemK.EGr, RecipeK.EGr_Sm);
+        recipeAltSeqMap.put(ItemK.Acid, RecipeK.Acid_Chem);
+        recipeAltSeqMap.put(ItemK.Oil, RecipeK.PlasRef_Refi);
+        recipeAltSeqMap.put(ItemK.Dmd, RecipeK.Dmd_Sm);
+        recipeAltSeqMap.put(ItemK.SilO, RecipeK.SilO_Mim);
+        recipeAltSeqMap.put(ItemK.OCr, RecipeK.OCr_Chem);
+        recipeAltSeqMap.put(ItemK.Gr, RecipeK.Gr_Sm);
+        recipeAltSeqMap.put(ItemK.Cont, RecipeK.Cont_As);
+        recipeAltSeqMap.put(ItemK.H, RecipeK.H_Orb);
+        recipeAltSeqMap.put(ItemK.NTube, RecipeK.NTube_Chem);
+        recipeAltSeqMap.put(ItemK.Cas, RecipeK.Cas_As);
+        recipeAltSeqMap.put(ItemK.PhC, RecipeK.PhC_As);
+        recipeAltSeqMap.put(ItemK.D, RecipeK.D_Frtr);
+        recipeAltSeqMap.put(ItemK.CrSil, RecipeK.CrSil_Sm);
 
 
         Memory.RECIPES.values().forEach(recipe -> {
             System.out.println("[DataCalculator.calcRecipesItemCostTree] INI " + recipe.getName());
-
             try {
 
                 RecipeTreeNode root = new RecipeTreeNode();
@@ -83,6 +85,7 @@ public class DataCalculator {
                 calcRecipeSequences(recipe, 1, mainBranchNode, recipeAltSeqMap);
 
 //                recipe.setRecipeTreeNode(root);
+                recipe.setSourcesCost(calcSourcesCost(root));
 
                 System.out.println("[DataCalculator.calcRecipesItemCostTree] FIN " + recipe.getName() + " => " + root);
             } catch (Exception e) {
@@ -90,6 +93,17 @@ public class DataCalculator {
                 if (recipe.getName().equals("Graphene")) {
 //                    e.printStackTrace();
                 }
+            }
+        });
+    }
+
+    public static void calcProliferatorCosts() {
+
+        Memory.getRecipes().forEach(recipe -> {
+            try {
+//                Memory.getRecipe()
+            } catch (Exception e) {
+                System.out.println("[DataCalculator.calcProliferatorCosts] ERROR " + recipe.getName() + ". " + e.getClass().getSimpleName() + ":" + e.getMessage());
             }
         });
     }
@@ -122,7 +136,7 @@ public class DataCalculator {
 //        System.out.println("[DataCalculator.calcRecipeCostTree] INI (" + recipe.getName() + "," + amount + "," + recipeCostTree + ")");
 //        if (recipe.getName().equals("Supersonic Missile Set")) return new RecipeCostTree();
 
-        if (nodeRecipe.getCode().equals("Gr-Sm")) {
+        if (nodeRecipe.getCode().equals("Turb-As")) {
 //            System.out.println("break-point here");
         }
 
@@ -139,6 +153,10 @@ public class DataCalculator {
 //                System.out.println("break-point here");
             }
 
+
+            if (filteredRecipeList.size() > 1) {
+//                System.out.println("Alternative recipes detected: " + filteredRecipeList.stream().map(Recipe::getCode).toList());
+            }
             filteredRecipeList = filterNonCircularRecipes(nodeRecipe, currentNode, filteredRecipeList);
             filteredRecipeList = filterExcludedRecipes(currentNode, filteredRecipeList);
 //            filteredRecipeList = filterNonSourcesFirst(filteredRecipeList);
@@ -167,7 +185,7 @@ public class DataCalculator {
             currentNode.addChild(childNode);
 
             if (!selectedCostRecipe.isSource()) {
-                calcRecipeSequences(selectedCostRecipe, amount * inputAmount, childNode, altSeqMap);
+                calcRecipeSequences(selectedCostRecipe, inputAmount, childNode, altSeqMap);
             }
         }
 
@@ -252,6 +270,29 @@ public class DataCalculator {
             }
         }
         return result;
+    }
+
+    public static TransputMap calcSourcesCost(RecipeTreeNode recipeTreeNode) {
+        TransputMap sourcesCost = new TransputMap();
+        recipeTreeNode.forEach(node -> {
+            if (!node.getName().equals("root")) {
+                RecipeTreeCost cost = node.getCost();
+                String itemKey = cost.getItemKey();
+                String recipeKey = cost.getRecipeKey();
+
+                if (Memory.RECIPES.get(recipeKey).isSource()) {
+
+                    Double currentItemCost = cost.getAmount();
+                    Double accumulatedItemCost = sourcesCost.get(itemKey);
+                    Double totalItemCost = currentItemCost;
+                    if (accumulatedItemCost != null) {
+                        totalItemCost += accumulatedItemCost;
+                    }
+                    sourcesCost.put(itemKey, totalItemCost);
+                }
+            }
+        });
+        return sourcesCost;
     }
 
 

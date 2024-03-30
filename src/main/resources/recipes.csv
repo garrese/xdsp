@@ -1,4 +1,4 @@
-;;;OUT 1;;;OUT 2;;;IN 1;;IN 2;;IN 3;;IN 4;;IN 5;;IN 6;;IN 6
+;;;OUT 1;;OUT 2;;;;IN 1;;IN 2;;IN 3;;IN 4;;IN 5;;IN 6;;IN 6
 Name;with;Code;Abb;Qty;Abb;Qty;time;Abb;Qty;Abb;Qty;Abb;Qty;Abb;Qty;Abb;Qty;Abb;Qty;;
 Iron Ingot;Sm;Ir-Sm;Ir;1;;;1;IrO;1;;;;;;;;;;;;
 Copper Ingot;Sm;Co-Sm;Co;1;;;1;CoO;1;;;;;;;;;;;;
@@ -158,6 +158,7 @@ Planetary Shield Generator;As;PSG-As;PSG;1;;;10;St;20;Turb;20;Ring;5;Cont;5;;;;;
 Crude Oil;Extr;Crude-Extr;Crude;2;;;1;;;;;;;;;;;;;;
 Iron Ore;Mim;IrO-Mim;IrO;3;;;1;;;;;;;;;;;;;;
 Copper Ore;Mim;CoO-Mim;CoO;3;;;1;;;;;;;;;;;;;;
+Silicon Ore;Mim;SilO-Mim;SilO;3;;;1;;;;;;;;;;;;;;
 Titanium Ore;Mim;TitO-Mim;TitO;3;;;1;;;;;;;;;;;;;;
 Carbon;Mim;C-Mim;C;3;;;1;;;;;;;;;;;;;;
 Stone;Mim;Stn-Mim;Stn;3;;;1;;;;;;;;;;;;;;

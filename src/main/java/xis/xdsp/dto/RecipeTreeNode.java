@@ -5,6 +5,7 @@ import lombok.*;
 import xis.xdsp.util.AppUtil;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 @Getter
 @Setter
@@ -197,6 +198,11 @@ public class RecipeTreeNode {
             setAlternativeRecipes(new LinkedHashSet<>());
         }
         getAlternativeRecipes().add(alternativeRecipes);
+    }
+
+    public void forEach(Consumer<? super RecipeTreeNode> consumer){
+        consumer.accept(this);
+        getChildMap().values().forEach(child -> child.forEach(consumer));
     }
 
     @Override
