@@ -23,6 +23,8 @@ public class RecipeTreeNode {
 
     RecipeTreeCost cost = new RecipeTreeCost();
 
+    TransputMap extraProducts;
+
     ArrayList<String> recipeHistory = new ArrayList<>();
 
     ArrayList<String> recipeExclusions;

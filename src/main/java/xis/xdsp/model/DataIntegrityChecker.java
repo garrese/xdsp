@@ -3,15 +3,14 @@ package xis.xdsp.model;
 import xis.xdsp.dto.Item;
 import xis.xdsp.dto.Recipe;
 import xis.xdsp.dto.TransputMap;
-import xis.xdsp.system.Memory;
-import xis.xdsp.util.AppUtil;
+import xis.xdsp.Memory;
 
 import java.util.Map;
 
 public class DataIntegrityChecker {
 
     public static void checkRecipes() {
-        for (Recipe recipe : Memory.RECIPES.values()) {
+        for (Recipe recipe : Memory.getRecipes()) {
             try {
                 checkTransputMapAbbs(recipe.getOutputs(), recipe);
                 checkTransputMapAbbs(recipe.getInputs(), recipe);
@@ -25,7 +24,7 @@ public class DataIntegrityChecker {
     private static void checkTransputMapAbbs(TransputMap transputMap, Recipe recipe) {
         for (Map.Entry<String, Double> entry : transputMap.entrySet()) {
             String abb = entry.getKey();
-            Item item = Memory.ITEMS.get(abb);
+            Item item = Memory.getItem(abb);
 
             if (item == null) {
                 error("Abb not found. Abb=" + abb + ", Recipe=" + recipe);

@@ -2,6 +2,7 @@ package xis.xdsp.dto;
 
 import com.google.gson.Gson;
 import lombok.Data;
+import xis.xdsp.dto.sub.Fuel;
 
 import java.util.List;
 

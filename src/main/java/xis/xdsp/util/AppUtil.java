@@ -1,6 +1,6 @@
 package xis.xdsp.util;
 
-import xis.xdsp.system.Memory;
+import xis.xdsp.Memory;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -31,21 +31,14 @@ public class AppUtil {
         map.put(key, value);
     }
 
-    /**
-     * Nombre original
-     */
-    public static final String nombre = """
-            /*** ejemplo 
-            """;
-
-    public static void printItemKeysJavaK(){
+    public static void printItemKeysJavaK() {
         Memory.getItems().forEach(item -> {
             String k = """
                     /**
                      * Name: %s, type: %s, rare: %s
                      */
                     public static final String %s = "%s";
-                    
+                                        
                     """;
             System.out.printf(
                     (k),
@@ -55,24 +48,28 @@ public class AppUtil {
         });
     }
 
-    public static void printRecipeKeysJavaK(){
+    public static void printRecipeKeysJavaK() {
         Memory.getRecipes().forEach(recipe -> {
             String k = """
-                   /**
-                     * Name: %s, with: %s
-                     */
-                    public static final String %s = "%s";
-                    
-                    """;
+                    /**
+                      * Name: %s, with: %s
+                      */
+                     public static final String %s = "%s";
+                     
+                     """;
             System.out.printf(
                     (k),
                     recipe.getName(), recipe.getWith(),
                     recipe.getCode()
-                            .replace("-","_")
-                            .replace("(a)","_a")
-                            .replace("(o)","_o"),
+                            .replace("-", "_")
+                            .replace("(a)", "_a")
+                            .replace("(o)", "_o"),
                     recipe.getCode());
         });
+    }
+
+    public static String printEx(Exception e) {
+        return e.getClass().getSimpleName() + ": " + e.getMessage();
     }
 
 }

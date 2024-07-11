@@ -1,4 +1,4 @@
-package xis.xdsp.dto;
+package xis.xdsp.dto.sub;
 
 import lombok.Data;
 

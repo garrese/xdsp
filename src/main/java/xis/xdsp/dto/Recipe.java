@@ -2,6 +2,8 @@ package xis.xdsp.dto;
 
 import lombok.Data;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Data
@@ -44,14 +46,22 @@ public class Recipe {
     TransputMap inputs = new TransputMap();
 
     /**
-     * Calculated item cost
+     * Calculated items cost of each output. Direct items, not sources. Negative values for coproduced outputs.
+     * Map<ItemKey,TransputMap>
      * Post-ingest calculated
+     *
+     * Examples:
+     * Ir-Sm itemsCost={Ir={"IrO":1.0}}
+     * Coil-As itemsCost={Coil={"Mag":1.0,"Co":0.5}}
+     * PlasRef-Refi itemsCost={Oil={"Crude":1.0,"H":-0.5}, H={"Crude":2.0,"Oil":-2.0}}
      */
-    TransputMap itemCost;
+    Map<String, TransputMap> itemsCost = new LinkedHashMap<>();
 
 //    RecipeTreeNode recipeTreeNode;
 
     TransputMap sourcesCost;
+
+    Double spraysNeeded;
 
     public boolean isSource() {
         return inputs.size() == 0;

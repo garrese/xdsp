@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static xis.xdsp.system.K.CSV_SEPARATOR;
+import static xis.xdsp.util.K.CSV_SEPARATOR;
 import static xis.xdsp.util.AppUtil.isBlank;
 
 public class CsvReader {
