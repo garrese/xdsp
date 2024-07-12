@@ -1,4 +1,4 @@
-package xis.xdsp.model;
+package xis.xdsp.readers;
 
 import xis.xdsp.dto.Recipe;
 import xis.xdsp.dto.RecipeMap;

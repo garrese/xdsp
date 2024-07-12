@@ -1,4 +1,4 @@
-package xis.xdsp.model;
+package xis.xdsp.readers;
 
 import xis.xdsp.dto.Item;
 import xis.xdsp.dto.ItemMap;

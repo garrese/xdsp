@@ -1,7 +1,7 @@
-package xis.xdsp.model;
+package xis.xdsp.calculators;
 
 import xis.xdsp.dto.*;
-import xis.xdsp.Memory;
+import xis.xdsp.memory.Memory;
 import xis.xdsp.util.AppUtil;
 
 import java.util.*;

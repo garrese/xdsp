@@ -1,8 +1,8 @@
-package xis.xdsp.model;
+package xis.xdsp.calculators;
 
 import xis.xdsp.dto.*;
 import xis.xdsp.ex.RecipeAltSeqException;
-import xis.xdsp.Memory;
+import xis.xdsp.memory.Memory;
 
 import java.util.ArrayList;
 import java.util.List;

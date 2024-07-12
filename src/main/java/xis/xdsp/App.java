@@ -1,33 +1,17 @@
 package xis.xdsp;
 
-import xis.xdsp.model.*;
+import xis.xdsp.memory.Memory;
+import xis.xdsp.memory.MemoryLoader;
 import xis.xdsp.util.AppUtil;
 
 public class App {
 
     public static void main(String[] args) throws Exception {
-        readCsvs();
-        calc();
+        MemoryLoader.load();
 
         AppUtil.printMap(Memory.getItemsMap());
         AppUtil.printMap(Memory.getRecipesMap());
 //        printJavaConstants();
-    }
-
-    public static void readCsvs() throws Exception {
-        ItemCsvReader itemCsvReader = new ItemCsvReader();
-        RecipeCsvReader recipeCsvReader = new RecipeCsvReader();
-        Memory.setItems(itemCsvReader.readItemListCsv());
-        Memory.setRecipes(recipeCsvReader.readRecipeListCsv());
-        DataIntegrityChecker.checkRecipes();
-    }
-
-    public static void calc(){
-        MemoryCalculator.calcAllItemsRecipes();
-        MemoryCalculator.calcAllRecipesOutputCost();
-        MemoryCalculator.calcAllRecipesSpraysNeeded();
-
-        MemoryCalculator.calcResourcesCosts();
     }
 
     public static void printJavaConstants(){

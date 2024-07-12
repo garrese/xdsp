@@ -1,4 +1,4 @@
-package xis.xdsp;
+package xis.xdsp.memory;
 
 import xis.xdsp.dto.Item;
 import xis.xdsp.dto.ItemMap;
@@ -67,6 +67,10 @@ public class Memory {
             AppUtil.securePut(recipeMap, recipeKey, RECIPES.get(recipeKey));
         }
         return recipeMap;
+    }
+
+    public static void setProliferators(Map<String, Proliferator> PROLIFERATORS) {
+        Memory.PROLIFERATORS = PROLIFERATORS;
     }
 
     public static Map<String, Proliferator> getProliferators() {

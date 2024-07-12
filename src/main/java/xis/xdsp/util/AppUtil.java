@@ -1,6 +1,6 @@
 package xis.xdsp.util;
 
-import xis.xdsp.Memory;
+import xis.xdsp.memory.Memory;
 
 import java.net.URL;
 import java.util.HashMap;

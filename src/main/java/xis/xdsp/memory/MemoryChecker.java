@@ -1,13 +1,12 @@
-package xis.xdsp.model;
+package xis.xdsp.memory;
 
 import xis.xdsp.dto.Item;
 import xis.xdsp.dto.Recipe;
 import xis.xdsp.dto.TransputMap;
-import xis.xdsp.Memory;
 
 import java.util.Map;
 
-public class DataIntegrityChecker {
+public class MemoryChecker {
 
     public static void checkRecipes() {
         for (Recipe recipe : Memory.getRecipes()) {

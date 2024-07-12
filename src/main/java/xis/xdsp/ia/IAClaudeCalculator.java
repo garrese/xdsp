@@ -2,7 +2,7 @@ package xis.xdsp.ia;
 
 import xis.xdsp.dto.Item;
 import xis.xdsp.dto.Recipe;
-import xis.xdsp.Memory;
+import xis.xdsp.memory.Memory;
 
 import java.util.HashMap;
 import java.util.HashSet;
