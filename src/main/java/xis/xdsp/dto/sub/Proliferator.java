@@ -5,13 +5,23 @@ import lombok.Data;
 @Data
 public class Proliferator {
 
-    Double sprays;
+    String itemKey;
+    String recipeKey;
+    Double spraysAvailable;
     Double extraProducts;
     Double productionSpeedup;
     Double energyConsumption;
 
-    public Proliferator(Double sprays, Double extraProducts, Double productionSpeedup, Double energyConsumption) {
-        this.sprays = sprays;
+    public Proliferator(
+            String itemKey,
+            String recipeKey,
+            Double spraysAvailable,
+            Double extraProducts,
+            Double productionSpeedup,
+            Double energyConsumption) {
+        this.itemKey = itemKey;
+        this.recipeKey = recipeKey;
+        this.spraysAvailable = spraysAvailable;
         this.extraProducts = extraProducts;
         this.productionSpeedup = productionSpeedup;
         this.energyConsumption = energyConsumption;

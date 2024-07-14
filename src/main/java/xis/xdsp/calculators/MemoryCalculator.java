@@ -22,18 +22,37 @@ public class MemoryCalculator {
         for (Recipe recipe : Memory.getRecipes()) {
             for (String outputItemKey : recipe.getOutputs().keySet()) {
                 TransputMap recipeOutputCost = DataCalculator.calcRecipeOutputCost(recipe, outputItemKey);
-                AppUtil.securePut(recipe.getItemsCost(), outputItemKey, recipeOutputCost);
+                AppUtil.securePut(recipe.getOutputsCost(), outputItemKey, recipeOutputCost);
             }
         }
     }
 
     public static void calcAllRecipesSpraysNeeded() {
         for (Recipe recipe : Memory.getRecipes()) {
-            recipe.setSpraysNeeded(DataCalculator.calcRecipeSpraysNeeded(recipe));
+            recipe.setRecipeSpraysNeeded(DataCalculator.calcRecipeSpraysNeeded(recipe));
         }
     }
 
-    public static void calcResourcesCosts() {
+    public static void calcAllRecipesSpraysSourceCost(){
+        for (Recipe recipe : Memory.getRecipes()) {
+            DataCalculator.calcRecipeSpraysSourceCost(recipe);
+        }
+    }
+
+    public static void calcAllRecipeSourcesCostPrSpeed(){
+        for (Recipe recipe : Memory.getRecipes()) {
+            DataCalculator.calcRecipeSourcesCostPrSpeed(recipe);
+        }
+    }
+
+    public static void calcAllRecipeSourcesCostPrExtra(){
+        for (Recipe recipe : Memory.getRecipes()) {
+            DataCalculator.calcRecipeSourcesCostPrExtra(recipe);
+        }
+    }
+
+
+    public static void calcRecipesResourcesCosts() {
 
         RecipeAltSeqMap recipeAltSeqMap = new RecipeAltSeqMap();
         recipeAltSeqMap.put(ItemK.EGr, RecipeK.EGr_Sm);
@@ -67,7 +86,7 @@ public class MemoryCalculator {
                 RecipeTreeCalculator.calcRecipeSequences(recipe, 1, mainBranchNode, recipeAltSeqMap);
 
 //                recipe.setRecipeTreeNode(root);
-                recipe.setSourcesCost(RecipeTreeCalculator.calcTreeNodeSourcesCost(root));
+                recipe.setRecipeSourcesCost(RecipeTreeCalculator.calcTreeNodeSourcesCost(root));
 
                 System.out.println("[DataCalculator.calcRecipesItemCostTree] FIN " + recipe.getName() + " => " + root);
             } catch (Exception e) {

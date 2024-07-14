@@ -2,6 +2,7 @@ package xis.xdsp;
 
 import xis.xdsp.memory.Memory;
 import xis.xdsp.memory.MemoryLoader;
+import xis.xdsp.printers.RecipeCsvPrinter;
 import xis.xdsp.util.AppUtil;
 
 public class App {
@@ -12,6 +13,9 @@ public class App {
         AppUtil.printMap(Memory.getItemsMap());
         AppUtil.printMap(Memory.getRecipesMap());
 //        printJavaConstants();
+
+        RecipeCsvPrinter.printRecipes("asdf");
+
     }
 
     public static void printJavaConstants(){

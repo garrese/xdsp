@@ -16,12 +16,12 @@ public class RecipeTreeCalculator {
 //        System.out.println("[DataCalculator.calcRecipeCostTree] INI (" + recipe.getName() + "," + amount + "," + recipeCostTree + ")");
 //        if (recipe.getName().equals("Supersonic Missile Set")) return new RecipeCostTree();
 
-        if (nodeRecipe.getCode().equals("Turb-As")) {
-//            System.out.println("break-point here");
+        if (nodeRecipe.getCode().equals("H-Orb")) {
+            System.out.println("break-point here");
         }
 
         RecipeTreeNode root = currentNode.getRoot();
-        Map<String, TransputMap> nodeRecipeItemCost = nodeRecipe.getItemsCost();
+        Map<String, TransputMap> nodeRecipeItemCost = nodeRecipe.getOutputsCost();
 
         for (String inputItemKey : nodeRecipe.getInputs().keySet()) {
 
@@ -29,42 +29,15 @@ public class RecipeTreeCalculator {
             List<String> costRecipeList = costItem.getOutputRecipeList();
             RecipeMap costRecipeMap = Memory.getRecipesMapByList(costRecipeList);
             List<Recipe> filteredRecipeList = new ArrayList<>(costRecipeMap.values());
-
-            if (inputItemKey.equals("EGr")) {
-//                System.out.println("break-point here");
-            }
-
-
-            if (filteredRecipeList.size() > 1) {
-//                System.out.println("Alternative recipes detected: " + filteredRecipeList.stream().map(Recipe::getCode).toList());
-            }
-            filteredRecipeList = filterNonCircularRecipes(nodeRecipe, currentNode, filteredRecipeList);
-            filteredRecipeList = filterExcludedRecipes(currentNode, filteredRecipeList);
-//            filteredRecipeList = filterNonSourcesFirst(filteredRecipeList);
-
-            Recipe selectedCostRecipe;
-            int alternativeRecipes = filteredRecipeList.size();
-            if (alternativeRecipes == 1) {
-                selectedCostRecipe = filteredRecipeList.getFirst();
-            } else if (alternativeRecipes > 1) {
-                if (altSeqMap == null || altSeqMap.get(inputItemKey) == null) {
-                    throw new RuntimeException("No alternative sequence map for [" + inputItemKey + "] alternativeRecipes: "
-                            + filteredRecipeList.stream().map(Recipe::getCode).toList());
-                }
-                RecipeAltSeq itemAltSeq = altSeqMap.get(inputItemKey);
-                selectedCostRecipe = filterAlternatives(itemAltSeq, filteredRecipeList);
-            } else {
-                throw new RuntimeException("No recipes found for [" + inputItemKey + "]");
-            }
+            Recipe selectedCostRecipe = selectCostRecipe(nodeRecipe, currentNode, altSeqMap, inputItemKey, filteredRecipeList);
 
             double inputAmount = amount * nodeRecipe.getInputs().get(inputItemKey);
             RecipeTreeNode childNode = new RecipeTreeNode();
-            childNode.setCost(new RecipeTreeCost(inputItemKey, inputAmount, selectedCostRecipe.getCode()));
+//            if (!nodeRecipe.isSource()) {
+                childNode.setCost(new RecipeTreeCost(inputItemKey, inputAmount, selectedCostRecipe.getCode()));
+//            }
             childNode.generateName();
             childNode.getRecipeHistory().add(selectedCostRecipe.getCode());
-
-//            nodeRecipeItemCost;
-//            if(nodeRecipeItemCost.get(inputItemKey) )
 
             currentNode.addChild(childNode);
 
@@ -74,6 +47,36 @@ public class RecipeTreeCalculator {
         }
 
         return currentNode;
+    }
+
+    private static Recipe selectCostRecipe(Recipe nodeRecipe, RecipeTreeNode currentNode, Map<String, RecipeAltSeq> altSeqMap, String inputItemKey, List<Recipe> filteredRecipeList) throws RecipeAltSeqException {
+        Recipe selectedCostRecipe;
+        if (inputItemKey.equals("EGr")) {
+//                System.out.println("break-point here");
+        }
+        if (filteredRecipeList.size() > 1) {
+//                System.out.println("Alternative recipes detected: " + filteredRecipeList.stream().map(Recipe::getCode).toList());
+        }
+
+        filteredRecipeList = filterNonCircularRecipes(nodeRecipe, currentNode, filteredRecipeList);
+        filteredRecipeList = filterExcludedRecipes(currentNode, filteredRecipeList);
+//            filteredRecipeList = filterNonSourcesFirst(filteredRecipeList);
+
+
+        int alternativeRecipes = filteredRecipeList.size();
+        if (alternativeRecipes == 1) {
+            selectedCostRecipe = filteredRecipeList.getFirst();
+        } else if (alternativeRecipes > 1) {
+            if (altSeqMap == null || altSeqMap.get(inputItemKey) == null) {
+                throw new RuntimeException("No alternative sequence map for [" + inputItemKey + "] alternativeRecipes: "
+                        + filteredRecipeList.stream().map(Recipe::getCode).toList());
+            }
+            RecipeAltSeq itemAltSeq = altSeqMap.get(inputItemKey);
+            selectedCostRecipe = filterAlternatives(itemAltSeq, filteredRecipeList);
+        } else {
+            throw new RuntimeException("No recipes found for [" + inputItemKey + "]");
+        }
+        return selectedCostRecipe;
     }
 
     /**
@@ -150,7 +153,7 @@ public class RecipeTreeCalculator {
                 String itemKey = cost.getItemKey();
                 String recipeKey = cost.getRecipeKey();
 
-                if (Memory.getRecipe(recipeKey).isSource()) {
+                if (Memory.getRecipe(recipeKey).isSource() && itemKey != null) {
 
                     Double currentItemCost = cost.getAmount();
                     Double accumulatedItemCost = sourcesCost.get(itemKey);

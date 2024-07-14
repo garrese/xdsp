@@ -55,13 +55,28 @@ public class Recipe {
      * Coil-As itemsCost={Coil={"Mag":1.0,"Co":0.5}}
      * PlasRef-Refi itemsCost={Oil={"Crude":1.0,"H":-0.5}, H={"Crude":2.0,"Oil":-2.0}}
      */
-    Map<String, TransputMap> itemsCost = new LinkedHashMap<>();
+    Map<String, TransputMap> outputsCost = new LinkedHashMap<>();
 
 //    RecipeTreeNode recipeTreeNode;
 
-    TransputMap sourcesCost;
+    /**
+     * Sources cost for the recipe (not for separate outputs).
+     */
+    TransputMap recipeSourcesCost = new TransputMap();
 
-    Double spraysNeeded;
+    /**
+     * Map<ItemKey for 3 Proliferators,TransputMap>
+     */
+    Map<String, TransputMap> recipeSourcesCostPrExtra = new LinkedHashMap<>();
+
+    Map<String, TransputMap> recipeSourcesCostPrSpeed = new LinkedHashMap<>();
+
+    Double recipeSpraysNeeded;
+
+    /**
+     * Map<ItemKey for 3 Proliferators,TransputMap>
+     */
+    Map<String, TransputMap> recipeSpraysSourceCost = new LinkedHashMap<>();
 
     public boolean isSource() {
         return inputs.size() == 0;

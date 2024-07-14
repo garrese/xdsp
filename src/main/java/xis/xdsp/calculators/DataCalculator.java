@@ -1,6 +1,7 @@
 package xis.xdsp.calculators;
 
 import xis.xdsp.dto.*;
+import xis.xdsp.dto.sub.Proliferator;
 import xis.xdsp.memory.Memory;
 import xis.xdsp.util.AppUtil;
 
@@ -24,12 +25,12 @@ public class DataCalculator {
                 AppUtil.securePut(recipeItemCost, ingredient.getKey(), ingredientRatio);
             }
             for (Map.Entry<String, Double> ingredient : recipe.getOutputs().entrySet()) {
-                if(!ingredient.getKey().equals(itemKey)) {
+                if (!ingredient.getKey().equals(itemKey)) {
                     Double ingredientRatio = -1 * ingredient.getValue() / itemOutputs;
                     recipeItemCost.sumTransput(ingredient.getKey(), ingredientRatio);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(AppUtil.printEx(e));
         }
         return recipeItemCost;
@@ -59,18 +60,58 @@ public class DataCalculator {
         return result;
     }
 
-    public static void calcProliferatorCosts() {
-        Memory.getRecipes().forEach(recipe -> {
-            try {
-//                Memory.getRecipe()
-            } catch (Exception e) {
-                System.out.println("[DataCalculator.calcProliferatorCosts] ERROR " + recipe.getName() + ". " + e.getClass().getSimpleName() + ":" + e.getMessage());
-            }
-        });
-    }
-
     public static double calcRecipeSpraysNeeded(Recipe recipe) {
         return recipe.getInputs().values().stream().mapToDouble(Double::doubleValue).sum();
+    }
+
+    public static void calcRecipeSpraysSourceCost(Recipe recipe) {
+//        recipe.setRecipeSpraysSourceCost(new LinkedHashMap<>());
+
+        if (recipe.getRecipeSpraysNeeded() != null && recipe.getRecipeSpraysNeeded() != 0) {
+            for (Proliferator pr : Memory.getProliferators()) {
+                Recipe prRecipe = Memory.getRecipe(pr.getRecipeKey());
+
+                Double proliferatorFraction = recipe.getRecipeSpraysNeeded() / pr.getSpraysAvailable();
+                TransputMap recipeSpraysSourceCost = new TransputMap(prRecipe.getRecipeSourcesCost());
+                recipeSpraysSourceCost.multiply(proliferatorFraction);
+
+                recipe.getRecipeSpraysSourceCost().put(pr.getItemKey(), recipeSpraysSourceCost);
+            }
+        }
+    }
+
+    public static void calcRecipeSourcesCostPrSpeed(Recipe recipe) {
+        TransputMap recipeSourcesCost = recipe.getRecipeSourcesCost();
+        if (!recipeSourcesCost.isEmpty()) {
+            for (Proliferator pr : Memory.getProliferators()) {
+                TransputMap recipeSpraysSourceCost = recipe.getRecipeSpraysSourceCost().get(pr.getItemKey());
+
+                if (recipeSpraysSourceCost != null && !recipeSpraysSourceCost.isEmpty()) {
+                    TransputMap recipeSourcesCostPrSpeed = new TransputMap();
+                    recipeSourcesCostPrSpeed.sumTransputMap(recipeSourcesCost);
+                    recipeSourcesCostPrSpeed.sumTransputMap(recipeSpraysSourceCost);
+                    recipe.getRecipeSourcesCostPrSpeed().put(pr.getItemKey(), recipeSourcesCostPrSpeed);
+                }
+            }
+        }
+    }
+
+    public static void calcRecipeSourcesCostPrExtra(Recipe recipe) {
+        TransputMap recipeSourcesCost = recipe.getRecipeSourcesCost();
+        if (!recipeSourcesCost.isEmpty()) {
+            for (Proliferator pr : Memory.getProliferators()) {
+                TransputMap recipeSpraysSourceCost = recipe.getRecipeSpraysSourceCost().get(pr.getItemKey());
+
+                if (recipeSpraysSourceCost != null && !recipeSpraysSourceCost.isEmpty()) {
+                    Double extraProduction = pr.getExtraProducts() + 1;
+                    TransputMap recipeSourcesCostPrExtra = new TransputMap(recipeSourcesCost);
+                    recipeSourcesCostPrExtra.divideDenominator(extraProduction);
+                    recipeSourcesCostPrExtra.sumTransputMap(recipeSpraysSourceCost);
+
+                    recipe.getRecipeSourcesCostPrExtra().put(pr.getItemKey(), recipeSourcesCostPrExtra);
+                }
+            }
+        }
     }
 
 

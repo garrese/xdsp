@@ -21,14 +21,6 @@ public class Memory {
 
     private static Map<String, Proliferator> PROLIFERATORS;
 
-    static {
-        LinkedHashMap<String, Proliferator> prs = new LinkedHashMap<>();
-        prs.put(ItemK.Pr1, new Proliferator(12d,0.125,0.25,0.3));
-        prs.put(ItemK.Pr2, new Proliferator(24d,0.20,0.5,0.7));
-        prs.put(ItemK.Pr3, new Proliferator(60d,0.25,1d,01.5));
-        PROLIFERATORS = prs;
-    }
-
     public static Item getItem(String itemKey){
         return ITEMS.get(itemKey);
     }
@@ -73,7 +65,11 @@ public class Memory {
         Memory.PROLIFERATORS = PROLIFERATORS;
     }
 
-    public static Map<String, Proliferator> getProliferators() {
+    public static Collection<Proliferator> getProliferators() {
+        return PROLIFERATORS.values();
+    }
+
+    public static Map<String, Proliferator> getProliferatorsMap() {
         return PROLIFERATORS;
     }
 }

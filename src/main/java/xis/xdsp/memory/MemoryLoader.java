@@ -30,7 +30,10 @@ public class MemoryLoader {
         MemoryCalculator.calcAllRecipesOutputCost();
         MemoryCalculator.calcAllRecipesSpraysNeeded();
 
-        MemoryCalculator.calcResourcesCosts();
+        MemoryCalculator.calcRecipesResourcesCosts();
+        MemoryCalculator.calcAllRecipesSpraysSourceCost();
+        MemoryCalculator.calcAllRecipeSourcesCostPrSpeed();
+        MemoryCalculator.calcAllRecipeSourcesCostPrExtra();
     }
 
 
