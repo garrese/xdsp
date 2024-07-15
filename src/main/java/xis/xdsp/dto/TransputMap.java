@@ -63,7 +63,7 @@ public class TransputMap extends LinkedHashMap<String, Double> {
         this.forEach((k, v) -> this.put(k, v / denominator));
     }
 
-    public Double getTotal(){
+    public Double calcTotal(){
         return this.values().stream().mapToDouble(Double::doubleValue).sum();
     }
 

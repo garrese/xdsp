@@ -20,9 +20,11 @@ public class MemoryLoader {
         RecipeCsvReader recipeCsvReader = new RecipeCsvReader();
         Memory.setRecipes(recipeCsvReader.readRecipeListCsv());
 
-        Memory.setProliferators(HardcodedReader.readProliferators());
-
         MemoryChecker.checkRecipes();
+
+        Memory.PROLIFERATORS = HardcodedReader.readProliferatorsMap();
+        Memory.FACTORIES = HardcodedReader.readFactoriesMap();
+
     }
 
     public static void calc(){
@@ -30,10 +32,12 @@ public class MemoryLoader {
         MemoryCalculator.calcAllRecipesOutputCost();
         MemoryCalculator.calcAllRecipesSpraysNeeded();
 
-        MemoryCalculator.calcRecipesResourcesCosts();
-        MemoryCalculator.calcAllRecipesSpraysSourceCost();
-        MemoryCalculator.calcAllRecipeSourcesCostPrSpeed();
-        MemoryCalculator.calcAllRecipeSourcesCostPrExtra();
+        MemoryCalculator.calcRecipesRawCosts();
+        MemoryCalculator.calcAllRecipesSpraysRawCost();
+        MemoryCalculator.calcAllRecipeRawCostPrSpeed();
+        MemoryCalculator.calcAllRecipeRawCostPrExtra();
+
+        MemoryCalculator.calcSourceItems();
     }
 
 

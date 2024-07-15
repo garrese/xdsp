@@ -5,6 +5,11 @@ import lombok.Data;
 @Data
 public class Proliferator {
 
+    public enum ProliferatorMode {
+        EXTRA,
+        SPEED
+    }
+
     String itemKey;
     String recipeKey;
     Double spraysAvailable;

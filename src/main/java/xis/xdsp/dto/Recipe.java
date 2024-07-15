@@ -1,6 +1,7 @@
 package xis.xdsp.dto;
 
 import lombok.Data;
+import xis.xdsp.dto.sub.RecipeOrdinations;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -8,6 +9,8 @@ import java.util.Objects;
 
 @Data
 public class Recipe {
+
+    RecipeOrdinations ordinations;
 
     /**
      * In-game recipe name
@@ -25,7 +28,7 @@ public class Recipe {
      * Unique recipe identifier
      * Ingested value
      */
-    String code;
+    String key;
 
     /**
      * In-game recipe base outputs
@@ -62,21 +65,21 @@ public class Recipe {
     /**
      * Sources cost for the recipe (not for separate outputs).
      */
-    TransputMap recipeSourcesCost = new TransputMap();
+    TransputMap recipeRawCost = new TransputMap();
 
     /**
      * Map<ItemKey for 3 Proliferators,TransputMap>
      */
-    Map<String, TransputMap> recipeSourcesCostPrExtra = new LinkedHashMap<>();
+    Map<String, TransputMap> recipeRawCostPrExtra = new LinkedHashMap<>();
 
-    Map<String, TransputMap> recipeSourcesCostPrSpeed = new LinkedHashMap<>();
+    Map<String, TransputMap> recipeRawCostPrSpeed = new LinkedHashMap<>();
 
     Double recipeSpraysNeeded;
 
     /**
      * Map<ItemKey for 3 Proliferators,TransputMap>
      */
-    Map<String, TransputMap> recipeSpraysSourceCost = new LinkedHashMap<>();
+    Map<String, TransputMap> recipeSpraysRawCost = new LinkedHashMap<>();
 
     public boolean isSource() {
         return inputs.size() == 0;
@@ -94,12 +97,12 @@ public class Recipe {
         if (o == null || getClass() != o.getClass()) return false;
         Recipe recipe = (Recipe) o;
         return Objects.equals(name, recipe.name) && Objects.equals(with, recipe.with)
-                && Objects.equals(code, recipe.code) && Objects.equals(outputs, recipe.outputs)
+                && Objects.equals(key, recipe.key) && Objects.equals(outputs, recipe.outputs)
                 && Objects.equals(time, recipe.time) && Objects.equals(inputs, recipe.inputs);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, with, code, outputs, time, inputs);
+        return Objects.hash(name, with, key, outputs, time, inputs);
     }
 }

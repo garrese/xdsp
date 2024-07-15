@@ -16,7 +16,7 @@ public class RecipeTreeCalculator {
 //        System.out.println("[DataCalculator.calcRecipeCostTree] INI (" + recipe.getName() + "," + amount + "," + recipeCostTree + ")");
 //        if (recipe.getName().equals("Supersonic Missile Set")) return new RecipeCostTree();
 
-        if (nodeRecipe.getCode().equals("H-Orb")) {
+        if (nodeRecipe.getKey().equals("H-Orb")) {
             System.out.println("break-point here");
         }
 
@@ -34,10 +34,10 @@ public class RecipeTreeCalculator {
             double inputAmount = amount * nodeRecipe.getInputs().get(inputItemKey);
             RecipeTreeNode childNode = new RecipeTreeNode();
 //            if (!nodeRecipe.isSource()) {
-                childNode.setCost(new RecipeTreeCost(inputItemKey, inputAmount, selectedCostRecipe.getCode()));
+                childNode.setCost(new RecipeTreeCost(inputItemKey, inputAmount, selectedCostRecipe.getKey()));
 //            }
             childNode.generateName();
-            childNode.getRecipeHistory().add(selectedCostRecipe.getCode());
+            childNode.getRecipeHistory().add(selectedCostRecipe.getKey());
 
             currentNode.addChild(childNode);
 
@@ -69,7 +69,7 @@ public class RecipeTreeCalculator {
         } else if (alternativeRecipes > 1) {
             if (altSeqMap == null || altSeqMap.get(inputItemKey) == null) {
                 throw new RuntimeException("No alternative sequence map for [" + inputItemKey + "] alternativeRecipes: "
-                        + filteredRecipeList.stream().map(Recipe::getCode).toList());
+                        + filteredRecipeList.stream().map(Recipe::getKey).toList());
             }
             RecipeAltSeq itemAltSeq = altSeqMap.get(inputItemKey);
             selectedCostRecipe = filterAlternatives(itemAltSeq, filteredRecipeList);
@@ -85,7 +85,7 @@ public class RecipeTreeCalculator {
     private static List<Recipe> filterNonCircularRecipes(Recipe nodeRecipe, RecipeTreeNode recipeTreeNode, List<Recipe> costRecipeList) {
         ArrayList<Recipe> result = new ArrayList<>();
         for (Recipe costRecipe : costRecipeList) {
-            if (costRecipe.getCode().equals(nodeRecipe.getCode())) {
+            if (costRecipe.getKey().equals(nodeRecipe.getKey())) {
                 break;
             }
 //            A recipe can be repeated. For example, if one item that need plastic is made of another item of plastic.
@@ -101,7 +101,7 @@ public class RecipeTreeCalculator {
         try {
             String next = recipeAltSeq.getNext();
             for (Recipe recipe : alternativeRecipeList) {
-                if (next.equals(recipe.getCode())) {
+                if (next.equals(recipe.getKey())) {
                     return recipe;
                 }
             }
@@ -138,7 +138,7 @@ public class RecipeTreeCalculator {
 
         ArrayList<Recipe> result = new ArrayList<>();
         for (Recipe costRecipe : costRecipeList) {
-            if (!main.getRecipeExclusions().contains(costRecipe.getCode())) {
+            if (!main.getRecipeExclusions().contains(costRecipe.getKey())) {
                 result.add(costRecipe);
             }
         }

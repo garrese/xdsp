@@ -4,6 +4,7 @@ import xis.xdsp.dto.Item;
 import xis.xdsp.dto.ItemMap;
 import xis.xdsp.util.AppUtil;
 import xis.xdsp.util.CsvReader;
+import xis.xdsp.util.PrintUtil;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class ItemCsvReader extends CsvReader {
             }
         } catch (Exception e) {
             System.out.println("ERROR: line=" + line);
-            AppUtil.printMap(itemMap);
+            PrintUtil.printMap(itemMap);
             throw e;
         }
         return itemMap;

@@ -4,28 +4,30 @@ import xis.xdsp.dto.Item;
 import xis.xdsp.dto.ItemMap;
 import xis.xdsp.dto.Recipe;
 import xis.xdsp.dto.RecipeMap;
+import xis.xdsp.dto.sub.Factory;
 import xis.xdsp.dto.sub.Proliferator;
 import xis.xdsp.util.AppUtil;
 import xis.xdsp.util.ItemK;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class Memory {
 
-    private static ItemMap ITEMS;
-    private static RecipeMap RECIPES;
+    public static ItemMap ITEMS;
+    public static RecipeMap RECIPES;
 
-    private static Map<String, Proliferator> PROLIFERATORS;
+    public static Map<String, Proliferator> PROLIFERATORS;
+    public static Map<String, Map<String, Factory>> FACTORIES;
 
-    public static Item getItem(String itemKey){
+    // [CoO, Crude, C, IrO, H, Ice, Wat, Stal, Stn, Kim, FSil, TitO, UMag, SilO, Grat]
+    public static Set<String> SOURCE_ITEMS;
+
+    public static Item getItem(String itemKey) {
         return ITEMS.get(itemKey);
     }
 
-    public static Collection<Item> getItems(){
+    public static Collection<Item> getItems() {
         return ITEMS.values();
     }
 
@@ -33,15 +35,15 @@ public class Memory {
         Memory.ITEMS = ITEMS;
     }
 
-    public static ItemMap getItemsMap(){
+    public static ItemMap getItemsMap() {
         return ITEMS;
     }
 
-    public static Recipe getRecipe(String recipeKey){
+    public static Recipe getRecipe(String recipeKey) {
         return RECIPES.get(recipeKey);
     }
 
-    public static Collection<Recipe> getRecipes(){
+    public static Collection<Recipe> getRecipes() {
         return RECIPES.values();
     }
 
@@ -49,7 +51,7 @@ public class Memory {
         Memory.RECIPES = RECIPES;
     }
 
-    public static RecipeMap getRecipesMap(){
+    public static RecipeMap getRecipesMap() {
         return RECIPES;
     }
 
@@ -61,15 +63,20 @@ public class Memory {
         return recipeMap;
     }
 
-    public static void setProliferators(Map<String, Proliferator> PROLIFERATORS) {
-        Memory.PROLIFERATORS = PROLIFERATORS;
-    }
-
     public static Collection<Proliferator> getProliferators() {
         return PROLIFERATORS.values();
     }
 
-    public static Map<String, Proliferator> getProliferatorsMap() {
-        return PROLIFERATORS;
+    public static Proliferator getProliferator(String itemK) {
+        return PROLIFERATORS.get(itemK);
     }
+
+    public static Map<String, Factory> getFactoriesByType(String type) {
+        return FACTORIES.get(type);
+    }
+
+    public static Factory getFactory(String typeKey, String itemKey) {
+        return FACTORIES.get(typeKey).get(itemKey);
+    }
+
 }

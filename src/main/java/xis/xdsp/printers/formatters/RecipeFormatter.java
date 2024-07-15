@@ -2,7 +2,6 @@ package xis.xdsp.printers.formatters;
 
 import lombok.Data;
 import xis.xdsp.dto.Recipe;
-import xis.xdsp.dto.TransputMap;
 
 import java.util.*;
 
@@ -16,9 +15,8 @@ public class RecipeFormatter {
     public RecipeFormatter(Recipe recipe) {
         this.recipe = recipe;
 
-        recipe.getRecipeSpraysSourceCost().values().forEach(transputMap -> itemsCostHeaders.addAll(transputMap.keySet()));
-        itemsCostHeaders.addAll(recipe.getRecipeSourcesCost().keySet());
-        System.out.println(itemsCostHeaders);
+        recipe.getRecipeSpraysRawCost().values().forEach(transputMap -> itemsCostHeaders.addAll(transputMap.keySet()));
+        itemsCostHeaders.addAll(recipe.getRecipeRawCost().keySet());
     }
 
     public ArrayList<String> getItemsCostHeadersList(){

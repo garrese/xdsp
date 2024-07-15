@@ -4,6 +4,7 @@ import xis.xdsp.dto.*;
 import xis.xdsp.dto.sub.Proliferator;
 import xis.xdsp.memory.Memory;
 import xis.xdsp.util.AppUtil;
+import xis.xdsp.util.PrintUtil;
 
 import java.util.*;
 
@@ -31,7 +32,7 @@ public class DataCalculator {
                 }
             }
         } catch (Exception e) {
-            System.out.println(AppUtil.printEx(e));
+            System.out.println(PrintUtil.printEx(e));
         }
         return recipeItemCost;
     }
@@ -41,7 +42,7 @@ public class DataCalculator {
         for (Recipe recipe : Memory.getRecipes()) {
             for (String inputAbb : recipe.getInputs().keySet()) {
                 if (inputAbb.equals(abb)) {
-                    result.add(recipe.getCode());
+                    result.add(recipe.getKey());
                 }
             }
         }
@@ -53,7 +54,7 @@ public class DataCalculator {
         for (Recipe recipe : Memory.getRecipes()) {
             for (String outputAbb : recipe.getOutputs().keySet()) {
                 if (outputAbb.equals(abb)) {
-                    result.add(recipe.getCode());
+                    result.add(recipe.getKey());
                 }
             }
         }
@@ -64,7 +65,7 @@ public class DataCalculator {
         return recipe.getInputs().values().stream().mapToDouble(Double::doubleValue).sum();
     }
 
-    public static void calcRecipeSpraysSourceCost(Recipe recipe) {
+    public static void calcRecipeSpraysRawCost(Recipe recipe) {
 //        recipe.setRecipeSpraysSourceCost(new LinkedHashMap<>());
 
         if (recipe.getRecipeSpraysNeeded() != null && recipe.getRecipeSpraysNeeded() != 0) {
@@ -72,35 +73,35 @@ public class DataCalculator {
                 Recipe prRecipe = Memory.getRecipe(pr.getRecipeKey());
 
                 Double proliferatorFraction = recipe.getRecipeSpraysNeeded() / pr.getSpraysAvailable();
-                TransputMap recipeSpraysSourceCost = new TransputMap(prRecipe.getRecipeSourcesCost());
+                TransputMap recipeSpraysSourceCost = new TransputMap(prRecipe.getRecipeRawCost());
                 recipeSpraysSourceCost.multiply(proliferatorFraction);
 
-                recipe.getRecipeSpraysSourceCost().put(pr.getItemKey(), recipeSpraysSourceCost);
+                recipe.getRecipeSpraysRawCost().put(pr.getItemKey(), recipeSpraysSourceCost);
             }
         }
     }
 
-    public static void calcRecipeSourcesCostPrSpeed(Recipe recipe) {
-        TransputMap recipeSourcesCost = recipe.getRecipeSourcesCost();
+    public static void calcRecipeRawCostPrSpeed(Recipe recipe) {
+        TransputMap recipeSourcesCost = recipe.getRecipeRawCost();
         if (!recipeSourcesCost.isEmpty()) {
             for (Proliferator pr : Memory.getProliferators()) {
-                TransputMap recipeSpraysSourceCost = recipe.getRecipeSpraysSourceCost().get(pr.getItemKey());
+                TransputMap recipeSpraysSourceCost = recipe.getRecipeSpraysRawCost().get(pr.getItemKey());
 
                 if (recipeSpraysSourceCost != null && !recipeSpraysSourceCost.isEmpty()) {
                     TransputMap recipeSourcesCostPrSpeed = new TransputMap();
                     recipeSourcesCostPrSpeed.sumTransputMap(recipeSourcesCost);
                     recipeSourcesCostPrSpeed.sumTransputMap(recipeSpraysSourceCost);
-                    recipe.getRecipeSourcesCostPrSpeed().put(pr.getItemKey(), recipeSourcesCostPrSpeed);
+                    recipe.getRecipeRawCostPrSpeed().put(pr.getItemKey(), recipeSourcesCostPrSpeed);
                 }
             }
         }
     }
 
-    public static void calcRecipeSourcesCostPrExtra(Recipe recipe) {
-        TransputMap recipeSourcesCost = recipe.getRecipeSourcesCost();
+    public static void calcRecipeRawCostPrExtra(Recipe recipe) {
+        TransputMap recipeSourcesCost = recipe.getRecipeRawCost();
         if (!recipeSourcesCost.isEmpty()) {
             for (Proliferator pr : Memory.getProliferators()) {
-                TransputMap recipeSpraysSourceCost = recipe.getRecipeSpraysSourceCost().get(pr.getItemKey());
+                TransputMap recipeSpraysSourceCost = recipe.getRecipeSpraysRawCost().get(pr.getItemKey());
 
                 if (recipeSpraysSourceCost != null && !recipeSpraysSourceCost.isEmpty()) {
                     Double extraProduction = pr.getExtraProducts() + 1;
@@ -108,7 +109,7 @@ public class DataCalculator {
                     recipeSourcesCostPrExtra.divideDenominator(extraProduction);
                     recipeSourcesCostPrExtra.sumTransputMap(recipeSpraysSourceCost);
 
-                    recipe.getRecipeSourcesCostPrExtra().put(pr.getItemKey(), recipeSourcesCostPrExtra);
+                    recipe.getRecipeRawCostPrExtra().put(pr.getItemKey(), recipeSourcesCostPrExtra);
                 }
             }
         }
