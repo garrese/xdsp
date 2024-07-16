@@ -68,7 +68,7 @@ public class RfpCsvWriter2 extends CsvWriter {
     }
 
     private void writeHeaders(List<String> costHeaderListOrder, BufferedWriter w, Rfp rfp, List<String> costHeaderList) throws Exception {
-        w.write(cells("Recipe Name", "F", "FType", "PrKey", "PrMode", "Energy", "Time", "TotCost "));
+        w.write(cells("[Recipe]", "[F]", "[FType]", "[Pr]", "[PrMode]", "[Energy]", "[Time]", "[TotCost] "));
         writeCostHeaders(costHeaderListOrder, w, rfp, costHeaderList);
         writeTransputsHeaders(w, rfp.getInputStatsMap(), "In");
         writeTransputsHeaders(w, rfp.getOutputStatsMap(), "Out");
@@ -79,9 +79,9 @@ public class RfpCsvWriter2 extends CsvWriter {
         if (costHeaderList != null) { //need recipe with PR cost headers, it doesn't matter if Extra or Speed
             List<String> remainingCostHeaders = new ArrayList<>(costHeaderList);
             for (String costHeader : costHeaderListOrder) {
-                if(costHeaderList.contains(costHeader)){
+                if (costHeaderList.contains(costHeader)) {
                     remainingCostHeaders.remove(costHeader);
-                    w.write(cells(costHeader, ">%Tot", ">%Dif"));
+                    w.write(cells("[" + costHeader + "]", "[" + costHeader + "%T]", "[" + costHeader + "%D]"));
                 }
             }
             if (remainingCostHeaders.size() > 0) {
@@ -91,9 +91,12 @@ public class RfpCsvWriter2 extends CsvWriter {
     }
 
     private void writeTransputsHeaders(BufferedWriter w, TransputStatsMap transputStatsMap, String prefix) throws IOException {
+        int transputN = 1;
         for (TransputStats transputStats : transputStatsMap.values()) {
-            String header = prefix + " " + transputStats.getItemK();
-            w.write(cells(header, ">Speed"));
+            String header = "[" + prefix + transputN + "-" + transputStats.getItemK() + "]";
+            String speedHeader = "[" + transputN + prefix + "#S" + "]";
+            w.write(cells(header, speedHeader));
+            transputN++;
         }
     }
 
@@ -108,7 +111,7 @@ public class RfpCsvWriter2 extends CsvWriter {
 
 
                 Double percOfTotal = null;
-                if(rcmpot != null){
+                if (rcmpot != null) {
                     percOfTotal = rfp.getRawCostMapPercetageOfTotal().get(itemKey);
                 }
 
@@ -124,7 +127,7 @@ public class RfpCsvWriter2 extends CsvWriter {
                 rawCostWritten = true;
             }
 
-            if(!rawCostWritten){
+            if (!rawCostWritten) {
                 w.write(emtpyCells(2));
             }
 
@@ -138,9 +141,9 @@ public class RfpCsvWriter2 extends CsvWriter {
         }
     }
 
-    private List<String> calcCostHeaderList(Recipe recipe){
+    private List<String> calcCostHeaderList(Recipe recipe) {
         TransputMap prTransputSum = new TransputMap();
-        for(TransputMap transputMap : recipe.getRecipeRawCostPrExtra().values()){
+        for (TransputMap transputMap : recipe.getRecipeRawCostPrExtra().values()) {
             prTransputSum.sumTransputMap(transputMap);
         }
         return new ArrayList<>(prTransputSum.keySet());

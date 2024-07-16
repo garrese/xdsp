@@ -1,5 +1,8 @@
 package xis.xdsp.dto;
 
+import xis.xdsp.memory.Memory;
+import xis.xdsp.util.GsonUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,5 +33,8 @@ public class RecipeAltSeq {
         return result;
     }
 
-
+    @Override
+    public String toString() {
+        return GsonUtil.GSON.toJson(sequence);
+    }
 }

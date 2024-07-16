@@ -1,6 +1,7 @@
 package xis.xdsp;
 
 import xis.xdsp.calculators.RfpCalculator;
+import xis.xdsp.dto.RecipeAltSeqMap;
 import xis.xdsp.dto.sub.Rfp;
 import xis.xdsp.memory.Memory;
 import xis.xdsp.memory.MemoryLoader;
@@ -18,13 +19,12 @@ public class App {
 
         PrintUtil.printMap(Memory.getItemsMap());
         PrintUtil.printMap(Memory.getRecipesMap());
-//        System.out.println(Memory.SOURCE_ITEMS);
+        System.out.println(Memory.SOURCE_ITEMS);
 //        printJavaConstants();
-//        alternativeRecipes();
+        alternativeRecipes();
+        alternativeRecipesSelected();
 
-        generateRfpCsv2();
-
-
+//        generateRfpCsv2();
     }
 
     public static void recipeCsvPrinter() {
@@ -32,27 +32,35 @@ public class App {
         recipeCsvWriter.printRecipes("C:/TMP/");
     }
 
-    public static void generateRfpCsv() throws Exception {
-        List<Rfp> rfpList = RfpCalculator.calcAllRfp();
-        List<String> costHeaderListOrder = List.of("IrO", "CoO", "C", "Crude", "H", "SilO", "TitO", "Stn", "Wat", "Ice", "Stal", "Kim", "FSil", "UMag", "Grat");
-        RfpCsvWriter printer = new RfpCsvWriter();
-        printer.printRecipes("C:/TMP/", rfpList, costHeaderListOrder);
-//        rfpList.forEach(System.out::println);
-    }
-
     public static void generateRfpCsv2() throws Exception {
-        List<Rfp> rfpList = RfpCalculator.calcAllRfp();
-        List<String> costHeaderListOrder = List.of("IrO", "CoO", "C", "Crude", "H", "SilO", "TitO", "Stn", "Wat", "Ice", "Stal", "Kim", "FSil", "UMag", "Grat");
+        List<String> excludedRecipes = List.of("OCr-As(o)");
+        List<Rfp> rfpList = RfpCalculator.calcAllRfp(excludedRecipes);
+        List<String> costHeaderListOrder = List.of("IrO", "CoO", "C", "Crude", "H", "SilO", "TitO", "Stn", "Wat",
+                "Ice", "Stal", "Kim", "FSil", "UMag", "Grat", "Ph", "DfMx", "Neur", "NegSin", "Shard", "Core", "MatRec");
         RfpCsvWriter2 printer = new RfpCsvWriter2();
+
         printer.printRecipes("C:/TMP/", rfpList, costHeaderListOrder);
-//        rfpList.forEach(System.out::println);
+        for(Rfp rfp : rfpList){
+//            if(rfp.getRecipeKey().equals("D-Frtr")){
+//                System.out.println("break-here");
+//            }
+//            System.out.println(rfp);
+        }
     }
 
     public static void alternativeRecipes() {
+        System.out.println("========== ALTERNATIVE Recipes ==========");
         Memory.getItems().forEach(i -> {
             if (i.getOutputRecipeList().size() > 1) {
                 System.out.println(i.getName() + " " + i.getOutputRecipeList());
             }
+        });
+    }
+
+    public static void alternativeRecipesSelected() {
+        System.out.println("========== SELECTED Alternative Recipe ==========");
+        MemoryLoader.getAltSeqMap().forEach((itemK,recipeAltSeq) -> {
+            System.out.println(Memory.getItem(itemK).getName() + "\t" + recipeAltSeq);
         });
     }
 

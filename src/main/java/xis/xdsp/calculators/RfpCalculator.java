@@ -15,10 +15,14 @@ import java.util.Map;
  */
 public class RfpCalculator {
 
-    public static List<Rfp> calcAllRfp() {
+    public static List<Rfp> calcAllRfp(List<String> excludeRecipeKeyList) {
+        if (excludeRecipeKeyList == null) excludeRecipeKeyList = new ArrayList<>();
         ArrayList<Rfp> result = new ArrayList<>();
         for (Recipe recipe : Memory.getRecipes()) {
-//            if(recipe.getKey().equals("Coil-As")) {
+//            if(recipe.getKey().equals("AnRod-As")){
+//                System.out.println("break-point-here");
+//            }
+            if (!excludeRecipeKeyList.contains(recipe.getKey()) && !recipe.isSource()) {
                 for (Factory factory : Memory.FACTORIES.get(recipe.getWith()).values()) {
                     result.add(calcRfp(recipe.getKey(), factory.getItemKey(), null, null));
                     for (Proliferator pr : Memory.getProliferators()) {
@@ -26,7 +30,7 @@ public class RfpCalculator {
                         result.add(calcRfp(recipe.getKey(), factory.getItemKey(), pr.getItemKey(), Proliferator.ProliferatorMode.SPEED));
                     }
                 }
-//            }
+            }
         }
         return result;
     }
@@ -80,10 +84,10 @@ public class RfpCalculator {
     }
 
     private static void calcProliferatorModeOrder(Proliferator.ProliferatorMode proliferatorMode, Rfp rfp) {
-        if (rfp.getProliferatorMode() == null){
+        if (rfp.getProliferatorMode() == null) {
             rfp.setProliferatorModeOrder(1);
         } else {
-            switch (proliferatorMode){
+            switch (proliferatorMode) {
                 case EXTRA -> rfp.setProliferatorModeOrder(2);
                 case SPEED -> rfp.setProliferatorModeOrder(3);
             }
@@ -96,7 +100,9 @@ public class RfpCalculator {
             Factory factory,
             Proliferator proliferator,
             Proliferator.ProliferatorMode proliferatorMode) {
+
         double time = recipe.getTime();
+        if (time == 0) return time;
         time /= factory.getProductionSpeed();
         if (proliferator != null && proliferatorMode.equals(Proliferator.ProliferatorMode.SPEED)) {
             time /= 1 + proliferator.getProductionSpeedup();
@@ -110,12 +116,14 @@ public class RfpCalculator {
             Factory factory,
             Proliferator proliferator,
             double time) {
-        double energy = time * factory.getWorkConsumption();
-        if (proliferator != null) {
-            double energyMod = 1 + proliferator.getEnergyConsumption();
-            energy *= energyMod;
+        if (time != 0) {
+            double energy = time * factory.getWorkConsumption();
+            if (proliferator != null) {
+                double energyMod = 1 + proliferator.getEnergyConsumption();
+                energy *= energyMod;
+            }
+            rfp.setEnergy(energy);
         }
-        rfp.setEnergy(energy);
     }
 
     public static TransputStatsMap calcTransputStats(
@@ -138,7 +146,7 @@ public class RfpCalculator {
             TransputStats transputStats = new TransputStats();
             transputStats.setItemK(itemK);
             transputStats.setQuantity(itemQty);
-            transputStats.setItemsPerSecond(itemQty / time);
+            if (time != 0) transputStats.setItemsPerSecond(itemQty / time);
 
             transputStatsMap.put(itemK, transputStats);
         }
@@ -155,7 +163,7 @@ public class RfpCalculator {
         } else if (proliferatorMode.equals(Proliferator.ProliferatorMode.SPEED)) {
             rfp.setRawCostMap(recipe.getRecipeRawCostPrSpeed().get(proliferatorItemK));
         }
-        if(rfp.getRawCostMap() != null) {
+        if (rfp.getRawCostMap() != null) {
             rfp.setRawCostTotal(rfp.getRawCostMap().calcTotal());
         }
     }
@@ -163,7 +171,7 @@ public class RfpCalculator {
 
     private static void calcRawCostPercentages(Rfp rfp, Recipe recipe, Proliferator proliferator) {
         rfp.setRawCostMapPercetageOfTotal(new TransputMap());
-        if(rfp.getRawCostMap() != null) {
+        if (rfp.getRawCostMap() != null) {
             for (Map.Entry<String, Double> entry : rfp.getRawCostMap().entrySet()) {
                 String itemK = entry.getKey();
                 Double itemQty = entry.getValue();
@@ -172,7 +180,7 @@ public class RfpCalculator {
                 AppUtil.securePut(rfp.getRawCostMapPercetageOfTotal(), itemK, percentageOfTotal);
 
                 if (proliferator != null) {
-                    if(rfp.getRawCostMapPercetageOfNoPr() == null) rfp.setRawCostMapPercetageOfNoPr(new TransputMap());
+                    if (rfp.getRawCostMapPercetageOfNoPr() == null) rfp.setRawCostMapPercetageOfNoPr(new TransputMap());
                     Double noPrItemQty = recipe.getRecipeRawCost().get(itemK);
                     if (noPrItemQty != null) {
                         Double percentageOfNoPr = itemQty / noPrItemQty;
