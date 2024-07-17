@@ -19,9 +19,6 @@ public class RfpCalculator {
         if (excludeRecipeKeyList == null) excludeRecipeKeyList = new ArrayList<>();
         ArrayList<Rfp> result = new ArrayList<>();
         for (Recipe recipe : Memory.getRecipes()) {
-//            if(recipe.getKey().equals("AnRod-As")){
-//                System.out.println("break-point-here");
-//            }
             boolean excluded = excludeSources && recipe.isSource();
             if (!excludeRecipeKeyList.contains(recipe.getKey()) && !excluded) {
                 for (Factory factory : Memory.FACTORIES.get(recipe.getWith()).values()) {

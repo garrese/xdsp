@@ -18,8 +18,8 @@ public class App {
 
     static String reportsPath = "C:/TMP/";
 
-//    static String rawCostsConfigLabel = "Basic";
-    static String rawCostsConfigLabel = "Renewable";
+    static String rawCostsConfigLabel = "Basic";
+//    static String rawCostsConfigLabel = "Renewable";
 
     public static void main(String[] args) throws Exception {
 

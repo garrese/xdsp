@@ -86,12 +86,6 @@ public class Recipe implements HasKey {
         return inputs.size() == 0;
     }
 
-//    @Override
-//    public String toString() {
-//        return new Gson().toJson(this);
-//    }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

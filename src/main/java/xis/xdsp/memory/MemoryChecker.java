@@ -17,7 +17,6 @@ public class MemoryChecker {
                 System.out.println("ERROR checking recipe = " + recipe);
             }
         }
-
     }
 
     private static void checkTransputMapAbbs(TransputMap transputMap, Recipe recipe) {

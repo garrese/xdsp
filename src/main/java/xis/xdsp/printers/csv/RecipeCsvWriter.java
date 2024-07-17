@@ -14,8 +14,6 @@ import java.util.Map;
 public class RecipeCsvWriter extends CsvWriter {
 
     public void writeRecipes(String path) {
-
-//        Path ResourcePath = Paths.get(Objects.requireNonNull(this.getClass().getResource("/")).getPath());
         String fileName = path + "RecipeCsvPrinter_" + System.currentTimeMillis() + ".csv";
 
         try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName, true))) {

@@ -24,7 +24,6 @@ public class MemoryLoader {
 
         Memory.PROLIFERATORS = HardcodedReader.readProliferatorsMap();
         Memory.FACTORIES = HardcodedReader.readFactoriesMap();
-
     }
 
     public static void calc(){

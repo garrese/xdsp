@@ -11,14 +11,9 @@ import java.util.*;
 public class DataCalculator {
 
 
-    /**
-     * @param recipe recipe
-     * @return production cost per recipe output item
-     */
-    public static TransputMap calcRecipeOutputCost(Recipe recipe, String itemKey) {
-//        double outputs = calcTransputMapTotalItems(recipe.getOutputs());
-        TransputMap recipeItemCost = new TransputMap();
 
+    public static TransputMap calcRecipeOutputCost(Recipe recipe, String itemKey) {
+        TransputMap recipeItemCost = new TransputMap();
         try {
             Double itemOutputs = recipe.getOutputs().get(itemKey);
             for (Map.Entry<String, Double> ingredient : recipe.getInputs().entrySet()) {

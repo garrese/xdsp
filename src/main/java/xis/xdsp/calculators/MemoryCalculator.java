@@ -115,36 +115,36 @@ public class MemoryCalculator {
         RecipeAltSeqMap recipeAltSeqMap = new RecipeAltSeqMap();
 
         //BASIC
-//        recipeAltSeqMap.put(ItemK.EGr, RecipeK.EGr_Sm);
-//        recipeAltSeqMap.put(ItemK.Acid, RecipeK.Acid_Chem);  //*
-//        recipeAltSeqMap.put(ItemK.Oil, RecipeK.PlasRef_Refi);
-//        recipeAltSeqMap.put(ItemK.Dmd, RecipeK.Dmd_Sm);
-//        recipeAltSeqMap.put(ItemK.SilO, RecipeK.SilO_Mim);
-//        recipeAltSeqMap.put(ItemK.OCr, RecipeK.OCr_Chem);
-//        recipeAltSeqMap.put(ItemK.Gr, RecipeK.Gr_Sm);
-//        recipeAltSeqMap.put(ItemK.Cont, RecipeK.Cont_As);
-//        recipeAltSeqMap.put(ItemK.H, RecipeK.PlasRef_Refi);  //*
-//        recipeAltSeqMap.put(ItemK.NTube, RecipeK.NTube_Chem);
-//        recipeAltSeqMap.put(ItemK.Cas, RecipeK.Cas_As);
-//        recipeAltSeqMap.put(ItemK.PhC, RecipeK.PhC_As);
-//        recipeAltSeqMap.put(ItemK.D, RecipeK.D_Frtr);
-//        recipeAltSeqMap.put(ItemK.CrSil, RecipeK.CrSil_Sm);
-
-        //RENEWABLE
         recipeAltSeqMap.put(ItemK.EGr, RecipeK.EGr_Sm);
-        recipeAltSeqMap.put(ItemK.Acid, RecipeK.Acid_Pump);  //*
+        recipeAltSeqMap.put(ItemK.Acid, RecipeK.Acid_Chem);  //*
         recipeAltSeqMap.put(ItemK.Oil, RecipeK.PlasRef_Refi);
         recipeAltSeqMap.put(ItemK.Dmd, RecipeK.Dmd_Sm);
         recipeAltSeqMap.put(ItemK.SilO, RecipeK.SilO_Mim);
         recipeAltSeqMap.put(ItemK.OCr, RecipeK.OCr_Chem);
         recipeAltSeqMap.put(ItemK.Gr, RecipeK.Gr_Sm);
         recipeAltSeqMap.put(ItemK.Cont, RecipeK.Cont_As);
-        recipeAltSeqMap.put(ItemK.H, RecipeK.H_Orb);        //*
+        recipeAltSeqMap.put(ItemK.H, RecipeK.PlasRef_Refi);  //*
         recipeAltSeqMap.put(ItemK.NTube, RecipeK.NTube_Chem);
         recipeAltSeqMap.put(ItemK.Cas, RecipeK.Cas_As);
         recipeAltSeqMap.put(ItemK.PhC, RecipeK.PhC_As);
-        recipeAltSeqMap.put(ItemK.D, RecipeK.D_Orb);        //*
+        recipeAltSeqMap.put(ItemK.D, RecipeK.D_Frtr);
         recipeAltSeqMap.put(ItemK.CrSil, RecipeK.CrSil_Sm);
+
+        //RENEWABLE
+//        recipeAltSeqMap.put(ItemK.EGr, RecipeK.EGr_Sm);
+//        recipeAltSeqMap.put(ItemK.Acid, RecipeK.Acid_Pump);  //*
+//        recipeAltSeqMap.put(ItemK.Oil, RecipeK.PlasRef_Refi);
+//        recipeAltSeqMap.put(ItemK.Dmd, RecipeK.Dmd_Sm);
+//        recipeAltSeqMap.put(ItemK.SilO, RecipeK.SilO_Mim);
+//        recipeAltSeqMap.put(ItemK.OCr, RecipeK.OCr_Chem);
+//        recipeAltSeqMap.put(ItemK.Gr, RecipeK.Gr_Sm);
+//        recipeAltSeqMap.put(ItemK.Cont, RecipeK.Cont_As);
+//        recipeAltSeqMap.put(ItemK.H, RecipeK.H_Orb);        //*
+//        recipeAltSeqMap.put(ItemK.NTube, RecipeK.NTube_Chem);
+//        recipeAltSeqMap.put(ItemK.Cas, RecipeK.Cas_As);
+//        recipeAltSeqMap.put(ItemK.PhC, RecipeK.PhC_As);
+//        recipeAltSeqMap.put(ItemK.D, RecipeK.D_Orb);        //*
+//        recipeAltSeqMap.put(ItemK.CrSil, RecipeK.CrSil_Sm);
 
 
         return recipeAltSeqMap;

@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 @Getter
 @Setter
 @NoArgsConstructor
-//@ToString
 public class RecipeTreeNode {
 
     public static final String ROOT_NAME = "root";
@@ -28,11 +27,8 @@ public class RecipeTreeNode {
     ArrayList<String> recipeHistory = new ArrayList<>();
 
     ArrayList<String> recipeExclusions;
-//
-//    List<String> tags;
 
     LinkedHashSet<String> alternativeRecipes;
-
 
     /**
      * Key is item.recipeKey+"_"+index
@@ -64,9 +60,7 @@ public class RecipeTreeNode {
         copy.setCost(this.getCost().getCopy());
         copy.generateName(alternativeName);
         copy.setRecipeHistory(new ArrayList<>(this.getRecipeHistory()));
-//        if (this.getTags() != null) {
-//            copy.setTags(new ArrayList<>(this.getTags()));
-//        }
+
         if (this.getRecipeExclusions() != null) {
             copy.setRecipeExclusions(new ArrayList<>(this.getRecipeExclusions()));
         }
@@ -122,7 +116,6 @@ public class RecipeTreeNode {
         if (parent != null && !ROOT_NAME.equals(parent.getName())) {
             this.setRecipeHistory(new ArrayList<>(getParent().getRecipeHistory()));
         }
-//        this.getRecipeHistory().add(this.getCost().recipeKey);
     }
 
     public RecipeTreeNode createFork() {
@@ -180,13 +173,6 @@ public class RecipeTreeNode {
         }
         getRecipeExclusions().add(exclude);
     }
-
-//    public void addTag(String tag) {
-//        if (getTags() == null) {
-//            setTags(new ArrayList<>());
-//        }
-//        getTags().add(tag);
-//    }
 
     public void addAlternativeRecipeList(List<String> alternativeRecipes) {
         if (getAlternativeRecipes() == null) {

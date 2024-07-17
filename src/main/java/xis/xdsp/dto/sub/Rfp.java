@@ -41,6 +41,7 @@ public class Rfp implements HasKey {
         String key = recipeKey;
         if (factoryItemKey != null) key += "_" + factoryItemKey;
         if (proliferatorKey != null) key += "_" + proliferatorKey;
+        if (getProliferatorMode() != null) key += "_" + proliferatorMode;
         return key;
     }
 

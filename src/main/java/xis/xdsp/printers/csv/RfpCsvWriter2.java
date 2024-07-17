@@ -5,6 +5,7 @@ import xis.xdsp.dto.TransputMap;
 import xis.xdsp.dto.sub.*;
 import xis.xdsp.memory.Memory;
 import xis.xdsp.printers.base.CsvWriter;
+import xis.xdsp.util.Debug;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -14,11 +15,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class RfpCsvWriter2 extends CsvWriter {
-
-    public static int INPUT_HEADERS_RESERVED = 6;
-    public static int OUTPUT_HEADERS_RESERVED = 2;
-
-    //ordenar por recipe totalCost > Name > factoryname > PrMode > PrKey
 
     public void writeRecipes(String path, List<Rfp> rfpList, List<String> costHeaderListOrder) throws Exception {
         String fileName = path + "RFP2_" + System.currentTimeMillis() + ".csv";
@@ -38,7 +34,7 @@ public class RfpCsvWriter2 extends CsvWriter {
 
                 String currentZone = recipe.getKey() + "_" + factory.getItemKey();
                 if (!currentZone.equals(previousZone)) {
-                    costHeaderList = calcCostHeaderList(recipe); //new ArrayList<>(recipe.getRecipeRawCostPrExtra().keySet()); //need recipe with PR cost headers, it doesn't matter if Extra or Speed
+                    costHeaderList = calcCostHeaderList(recipe);
                     writeHeaders(costHeaderListOrder, w, rfp, costHeaderList);
                 }
                 previousZone = currentZone;
@@ -55,7 +51,7 @@ public class RfpCsvWriter2 extends CsvWriter {
                 w.write(cellNum2d(rfp.getRawCostTotal()));
 
 
-                writeRawCosts(w, rfp, costHeaderList);
+                writeRawCosts(w, rfp, costHeaderList, costHeaderListOrder);
                 writeTransputStats(w, rfp.getInputStatsMap());
                 writeTransputStats(w, rfp.getOutputStatsMap());
                 w.newLine();
@@ -76,6 +72,9 @@ public class RfpCsvWriter2 extends CsvWriter {
     }
 
     private void writeCostHeaders(List<String> costHeaderListOrder, BufferedWriter w, Rfp rfp, List<String> costHeaderList) throws Exception {
+        if (rfp.getRecipeKey().equals("PlasRef-Refi")) {
+            Debug.point();
+        }
         if (costHeaderList != null) { //need recipe with PR cost headers, it doesn't matter if Extra or Speed
             List<String> remainingCostHeaders = new ArrayList<>(costHeaderList);
             for (String costHeader : costHeaderListOrder) {
@@ -106,14 +105,16 @@ public class RfpCsvWriter2 extends CsvWriter {
     }
 
 
-    private void writeRawCosts(BufferedWriter w, Rfp rfp, List<String> costHeaderList) throws Exception {
-        for (String itemKey : costHeaderList) {
+    private void writeRawCosts(BufferedWriter w, Rfp rfp, List<String> costHeaderList, List<String> costHeaderListOrder) throws Exception {
+        if (rfp.getRecipeKey().equals("PlasRef-Refi")) {
+            Debug.point();
+        }
+        for (String itemKey : costHeaderListOrder) {
             boolean rawCostWritten = false;
-            if (rfp.getRawCostMap() != null) {
+            if (rfp.getRawCostMap() != null && rfp.getRawCostMap().get(itemKey) != null) {
                 Double itemCost = rfp.getRawCostMap().get(itemKey);
                 TransputMap rcmpot = rfp.getRawCostMapPercetageOfTotal();
                 TransputMap rcmponp = rfp.getRawCostMapPercetageOfNoPr();
-
 
                 Double percOfTotal = null;
                 if (rcmpot != null) {
@@ -131,8 +132,8 @@ public class RfpCsvWriter2 extends CsvWriter {
                 rawCostWritten = true;
             }
 
-            if (!rawCostWritten) {
-                w.write(emtpyCells(2));
+            if (!rawCostWritten && costHeaderList.contains(itemKey)) {
+                w.write(emtpyCells(3));
             }
 
         }
