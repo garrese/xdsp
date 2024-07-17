@@ -10,8 +10,6 @@ import java.util.Objects;
 @Data
 public class Recipe {
 
-    RecipeOrdinations ordinations;
-
     /**
      * In-game recipe name
      * Ingested value
@@ -80,6 +78,8 @@ public class Recipe {
      * Map<ItemKey for 3 Proliferators,TransputMap>
      */
     Map<String, TransputMap> recipeSpraysRawCost = new LinkedHashMap<>();
+
+    RecipeOrdinations ordinations;
 
     public boolean isSource() {
         return inputs.size() == 0;

@@ -1,13 +1,9 @@
 package xis.xdsp.memory;
 
-import xis.xdsp.dto.Item;
-import xis.xdsp.dto.ItemMap;
-import xis.xdsp.dto.Recipe;
-import xis.xdsp.dto.RecipeMap;
+import xis.xdsp.dto.*;
 import xis.xdsp.dto.sub.Factory;
 import xis.xdsp.dto.sub.Proliferator;
 import xis.xdsp.util.AppUtil;
-import xis.xdsp.util.ItemK;
 
 import java.util.*;
 
@@ -20,8 +16,9 @@ public class Memory {
     public static Map<String, Proliferator> PROLIFERATORS;
     public static Map<String, Map<String, Factory>> FACTORIES;
 
-    // [CoO, Crude, C, IrO, H, Ice, Wat, Stal, Stn, Kim, FSil, TitO, UMag, SilO, Grat]
-    public static Set<String> SOURCE_ITEMS;
+    public static Set<String> RAW_ITEM_LIST;
+
+    public static Map<String, RecipeAltSeq> altSeqMap;
 
     public static Item getItem(String itemKey) {
         return ITEMS.get(itemKey);

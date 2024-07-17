@@ -15,14 +15,15 @@ import java.util.Map;
  */
 public class RfpCalculator {
 
-    public static List<Rfp> calcAllRfp(List<String> excludeRecipeKeyList) {
+    public static List<Rfp> calcAllRfp(List<String> excludeRecipeKeyList, boolean excludeSources) {
         if (excludeRecipeKeyList == null) excludeRecipeKeyList = new ArrayList<>();
         ArrayList<Rfp> result = new ArrayList<>();
         for (Recipe recipe : Memory.getRecipes()) {
 //            if(recipe.getKey().equals("AnRod-As")){
 //                System.out.println("break-point-here");
 //            }
-            if (!excludeRecipeKeyList.contains(recipe.getKey()) && !recipe.isSource()) {
+            boolean excluded = excludeSources && recipe.isSource();
+            if (!excludeRecipeKeyList.contains(recipe.getKey()) && !excluded) {
                 for (Factory factory : Memory.FACTORIES.get(recipe.getWith()).values()) {
                     result.add(calcRfp(recipe.getKey(), factory.getItemKey(), null, null));
                     for (Proliferator pr : Memory.getProliferators()) {

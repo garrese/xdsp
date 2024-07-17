@@ -13,7 +13,7 @@ public class ItemCsvReader extends CsvReader {
 
     public static final String CSV_NAME = "items.csv";
 
-    public static final int LINE_START = 2;
+    public static final int LINE_START = 1;
     public static final int COL_TYPE = 0;
     public static final int COL_NAME = 1;
     public static final int COL_ABB = 2;

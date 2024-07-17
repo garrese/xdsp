@@ -1,12 +1,10 @@
 package xis.xdsp;
 
 import xis.xdsp.calculators.RfpCalculator;
-import xis.xdsp.dto.RecipeAltSeqMap;
 import xis.xdsp.dto.sub.Rfp;
 import xis.xdsp.memory.Memory;
 import xis.xdsp.memory.MemoryLoader;
 import xis.xdsp.printers.RecipeCsvWriter;
-import xis.xdsp.printers.RfpCsvWriter;
 import xis.xdsp.printers.RfpCsvWriter2;
 import xis.xdsp.util.PrintUtil;
 
@@ -19,12 +17,12 @@ public class App {
 
         PrintUtil.printMap(Memory.getItemsMap());
         PrintUtil.printMap(Memory.getRecipesMap());
-        System.out.println(Memory.SOURCE_ITEMS);
+        System.out.println(Memory.RAW_ITEM_LIST);
 //        printJavaConstants();
         alternativeRecipes();
         alternativeRecipesSelected();
 
-//        generateRfpCsv2();
+        generateRfpCsv2();
     }
 
     public static void recipeCsvPrinter() {
@@ -33,9 +31,9 @@ public class App {
     }
 
     public static void generateRfpCsv2() throws Exception {
-        List<String> excludedRecipes = List.of("OCr-As(o)");
-        List<Rfp> rfpList = RfpCalculator.calcAllRfp(excludedRecipes);
-        List<String> costHeaderListOrder = List.of("IrO", "CoO", "C", "Crude", "H", "SilO", "TitO", "Stn", "Wat",
+        List<String> excludedRecipes = List.of("OCr-As(o)","Core-Drop","MatRec-Drop","NegSin-Drop","Shard-Drop","Neur-Drop","DfMx-Drop","Ph-RR");
+        List<Rfp> rfpList = RfpCalculator.calcAllRfp(excludedRecipes, true);
+        List<String> costHeaderListOrder = List.of("IrO", "CoO", "C", "Crude", "H", "SilO", "TitO", "Stn", "Wat", "Acid", "D",
                 "Ice", "Stal", "Kim", "FSil", "UMag", "Grat", "Ph", "DfMx", "Neur", "NegSin", "Shard", "Core", "MatRec");
         RfpCsvWriter2 printer = new RfpCsvWriter2();
 

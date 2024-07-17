@@ -1,5 +1,5 @@
 ;;
-Type;Name;Abb
+Type;Name;Key
 Material;Iron Ingot;Ir
 Material;Copper Ingot;Co
 Material;High-purity Silicon;Sil
@@ -35,7 +35,7 @@ Component;Thruster;Thr
 Component;Reinforced Thruster;RThr
 End Product;Superalloy Ammo Box;AllAmm
 End Product;Gravity Missile Set;GMiss
-Component;Gear;Gear
+Component;Gear;Ge
 Component;Electromagnetic Turbine;Turb
 Natural Resource;Silicon Ore;SilO
 Component;Circuit Board;Circ
@@ -128,6 +128,7 @@ Smelting Facility;Negentrophy Smelter;NegSm
 Assembler;Assembling Machine Mk.I;As
 Assembler;Assembling Machine Mk.II;As2
 Assembler;Assembling Machine Mk.III;As3
+Assembler;Assembling Machine Mk.III;As4
 Assembler;Re-composing Assembler;RcAs
 Research Facility;Matrix Lab;Lab
 Research Facility;Self Evolution Lab;SevLab

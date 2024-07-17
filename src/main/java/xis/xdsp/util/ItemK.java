@@ -178,9 +178,9 @@ public class ItemK {
     public static final String GMiss = "GMiss";
 
     /**
-     * Name: Gear, type: Component, rare: false
+     * Name: Ge, type: Component, rare: false
      */
-    public static final String Gear = "Gear";
+    public static final String Ge = "Ge";
 
     /**
      * Name: Electromagnetic Turbine, type: Component, rare: false

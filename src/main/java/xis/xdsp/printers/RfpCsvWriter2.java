@@ -68,7 +68,7 @@ public class RfpCsvWriter2 extends CsvWriter {
     }
 
     private void writeHeaders(List<String> costHeaderListOrder, BufferedWriter w, Rfp rfp, List<String> costHeaderList) throws Exception {
-        w.write(cells("[Recipe]", "[F]", "[FType]", "[Pr]", "[PrMode]", "[Energy]", "[Time]", "[TotCost] "));
+        w.write(cells("|Recipe|", "|F|", "|FType|", "|Pr|", "|PrMode|", "|Energy|", "|Time|", "|TotCost| "));
         writeCostHeaders(costHeaderListOrder, w, rfp, costHeaderList);
         writeTransputsHeaders(w, rfp.getInputStatsMap(), "In");
         writeTransputsHeaders(w, rfp.getOutputStatsMap(), "Out");
@@ -93,9 +93,14 @@ public class RfpCsvWriter2 extends CsvWriter {
     private void writeTransputsHeaders(BufferedWriter w, TransputStatsMap transputStatsMap, String prefix) throws IOException {
         int transputN = 1;
         for (TransputStats transputStats : transputStatsMap.values()) {
-            String header = "[" + prefix + transputN + "-" + transputStats.getItemK() + "]";
-            String speedHeader = "[" + transputN + prefix + "#S" + "]";
-            w.write(cells(header, speedHeader));
+
+//            String header = "[" + prefix + transputN + "-" + transputStats.getItemK() + "]";
+//            String speedHeader = "[" + transputN + prefix + "#S" + "]";
+//            w.write(cells(header, speedHeader));
+
+            String speedHeader = "[" + prefix + transputN + "-" + transputStats.getItemK() + "/s]";
+            w.write(cells(speedHeader));
+
             transputN++;
         }
     }
@@ -106,8 +111,8 @@ public class RfpCsvWriter2 extends CsvWriter {
             boolean rawCostWritten = false;
             if (rfp.getRawCostMap() != null) {
                 Double itemCost = rfp.getRawCostMap().get(itemKey);
-                TransputMap rcmponp = rfp.getRawCostMapPercetageOfNoPr();
                 TransputMap rcmpot = rfp.getRawCostMapPercetageOfTotal();
+                TransputMap rcmponp = rfp.getRawCostMapPercetageOfNoPr();
 
 
                 Double percOfTotal = null;
@@ -117,10 +122,9 @@ public class RfpCsvWriter2 extends CsvWriter {
 
                 Double costDiff = null;
                 if (rcmponp != null && rcmponp.get(itemKey) != null) {
-                    costDiff = (1 - rfp.getRawCostMapPercetageOfNoPr().get(itemKey));
+                    costDiff = (1 - rfp.getRawCostMapPercetageOfNoPr().get(itemKey)) * -1;
                 }
 
-//                w.write(cells(itemCost, percOfTotal, costDiff));
                 w.write(cellNum3d(itemCost));
                 w.write(cellPerc1d(percOfTotal));
                 w.write(cellPerc1d(costDiff));
@@ -136,7 +140,7 @@ public class RfpCsvWriter2 extends CsvWriter {
 
     private void writeTransputStats(BufferedWriter w, TransputStatsMap transputStatsMap) throws IOException {
         for (TransputStats transputStats : transputStatsMap.values()) {
-            w.write(cellNum3d(transputStats.getQuantity()));
+//            w.write(cellNum3d(transputStats.getQuantity()));
             w.write(cellNum3d(transputStats.getItemsPerSecond()));
         }
     }

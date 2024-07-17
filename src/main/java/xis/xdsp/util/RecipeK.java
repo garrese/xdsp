@@ -638,6 +638,11 @@ public class RecipeK {
     public static final String Sr3_As = "Sr3-As";
 
     /**
+     * Name: Pile Sorter, with: As
+     */
+    public static final String Sr4_As = "Sr4-As";
+
+    /**
      * Name: Mining Machine, with: As
      */
     public static final String Mim_As = "Mim-As";

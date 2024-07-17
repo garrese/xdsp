@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import lombok.Data;
 import xis.xdsp.dto.sub.Fuel;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class Item {
@@ -43,7 +45,10 @@ public class Item {
 
     List<String> inputRecipeList;
 
-//    ItemCost itemCost;
+    /**
+     * Sources cost for the recipe (not for separate outputs).
+     */
+    TransputMap itemRawCost = new TransputMap();
 
     /**
      * @return true if the item can be used as fuel in the in-games fuel consumers

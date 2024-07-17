@@ -47,6 +47,7 @@ public class HardcodedReader {
         readFactory(1, ItemK.Frtr, ItemK.Frtr, 720d, 18d, 1d, factoriesMap);
         readFactory(1, ItemK.Coll, ItemK.Coll, 12000d, 120d, 1d, factoriesMap);
         readFactory(1, ItemK.Orb, ItemK.Orb, 1d, 1d, 1d, factoriesMap);
+
         return factoriesMap;
     }
 

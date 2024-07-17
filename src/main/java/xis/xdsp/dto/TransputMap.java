@@ -63,8 +63,21 @@ public class TransputMap extends LinkedHashMap<String, Double> {
         this.forEach((k, v) -> this.put(k, v / denominator));
     }
 
-    public Double calcTotal(){
+    public Double calcTotal() {
         return this.values().stream().mapToDouble(Double::doubleValue).sum();
+    }
+
+    /**
+     * Copy of positive values only
+     */
+    public TransputMap positiveCopy() {
+        TransputMap copy = new TransputMap();
+        for (Map.Entry<String, Double> entry : this.entrySet()) {
+            if (entry.getValue() > 0) {
+                copy.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return copy;
     }
 
 }

@@ -66,50 +66,64 @@ public class DataCalculator {
     }
 
     public static void calcRecipeSpraysRawCost(Recipe recipe) {
-//        recipe.setRecipeSpraysSourceCost(new LinkedHashMap<>());
-
         if (recipe.getRecipeSpraysNeeded() != null && recipe.getRecipeSpraysNeeded() != 0) {
             for (Proliferator pr : Memory.getProliferators()) {
-                Recipe prRecipe = Memory.getRecipe(pr.getRecipeKey());
+                Item prItem = Memory.getItem(pr.getItemKey());
 
                 Double proliferatorFraction = recipe.getRecipeSpraysNeeded() / pr.getSpraysAvailable();
-                TransputMap recipeSpraysSourceCost = new TransputMap(prRecipe.getRecipeRawCost());
-                recipeSpraysSourceCost.multiply(proliferatorFraction);
+                TransputMap recipeSpraysRawCost = new TransputMap(prItem.getItemRawCost().positiveCopy());
+                recipeSpraysRawCost.multiply(proliferatorFraction);
 
-                recipe.getRecipeSpraysRawCost().put(pr.getItemKey(), recipeSpraysSourceCost);
+                recipe.getRecipeSpraysRawCost().put(pr.getItemKey(), recipeSpraysRawCost);
             }
         }
     }
 
-    public static void calcRecipeRawCostPrSpeed(Recipe recipe) {
-        TransputMap recipeSourcesCost = recipe.getRecipeRawCost();
-        if (!recipeSourcesCost.isEmpty()) {
-            for (Proliferator pr : Memory.getProliferators()) {
-                TransputMap recipeSpraysSourceCost = recipe.getRecipeSpraysRawCost().get(pr.getItemKey());
+    public static void calcRecipeRawCost(Recipe recipe) {
+            TransputMap recipeRawCost = new TransputMap();
+            for (Map.Entry<String, Double> inputEntry : recipe.getInputs().entrySet()) {
+                String itemKey = inputEntry.getKey();
+                Double itemValue = inputEntry.getValue();
+                Item item = Memory.getItem(itemKey);
+                TransputMap itemsRawCost = item.getItemRawCost().positiveCopy();
+                itemsRawCost.multiply(itemValue);
+                recipeRawCost.sumTransputMap(itemsRawCost);
+            }
+            recipe.setRecipeRawCost(recipeRawCost);
+    }
 
-                if (recipeSpraysSourceCost != null && !recipeSpraysSourceCost.isEmpty()) {
-                    TransputMap recipeSourcesCostPrSpeed = new TransputMap();
-                    recipeSourcesCostPrSpeed.sumTransputMap(recipeSourcesCost);
-                    recipeSourcesCostPrSpeed.sumTransputMap(recipeSpraysSourceCost);
-                    recipe.getRecipeRawCostPrSpeed().put(pr.getItemKey(), recipeSourcesCostPrSpeed);
+    public static void calcRecipeRawCostPrSpeed(Recipe recipe) {
+        TransputMap recipeRawCost = recipe.getRecipeRawCost();
+        if (!recipeRawCost.isEmpty()) {
+            for (Proliferator pr : Memory.getProliferators()) {
+                TransputMap recipeSpraysRawCost = recipe.getRecipeSpraysRawCost().get(pr.getItemKey());
+
+                if (recipeSpraysRawCost != null && !recipeSpraysRawCost.isEmpty()) {
+                    TransputMap recipeRawCostPrSpeed = new TransputMap();
+                    recipeRawCostPrSpeed.sumTransputMap(recipeRawCost);
+                    recipeRawCostPrSpeed.sumTransputMap(recipeSpraysRawCost);
+                    recipe.getRecipeRawCostPrSpeed().put(pr.getItemKey(), recipeRawCostPrSpeed);
                 }
             }
         }
     }
 
+
     public static void calcRecipeRawCostPrExtra(Recipe recipe) {
-        TransputMap recipeSourcesCost = recipe.getRecipeRawCost();
-        if (!recipeSourcesCost.isEmpty()) {
+        TransputMap recipeRawCost = recipe.getRecipeRawCost();
+        if (!recipeRawCost.isEmpty()) {
             for (Proliferator pr : Memory.getProliferators()) {
-                TransputMap recipeSpraysSourceCost = recipe.getRecipeSpraysRawCost().get(pr.getItemKey());
+                TransputMap recipeSpraysRawCost = recipe.getRecipeSpraysRawCost().get(pr.getItemKey());
 
-                if (recipeSpraysSourceCost != null && !recipeSpraysSourceCost.isEmpty()) {
+                if (recipeSpraysRawCost != null && !recipeSpraysRawCost.isEmpty()) {
+
+                    TransputMap recipeRawCostPrExtra = new TransputMap(recipeRawCost);
+                    recipeRawCostPrExtra.sumTransputMap(recipeSpraysRawCost);
+
                     Double extraProduction = pr.getExtraProducts() + 1;
-                    TransputMap recipeSourcesCostPrExtra = new TransputMap(recipeSourcesCost);
-                    recipeSourcesCostPrExtra.divideDenominator(extraProduction);
-                    recipeSourcesCostPrExtra.sumTransputMap(recipeSpraysSourceCost);
+                    recipeRawCostPrExtra.divideDenominator(extraProduction);
 
-                    recipe.getRecipeRawCostPrExtra().put(pr.getItemKey(), recipeSourcesCostPrExtra);
+                    recipe.getRecipeRawCostPrExtra().put(pr.getItemKey(), recipeRawCostPrExtra);
                 }
             }
         }

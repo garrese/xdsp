@@ -3,8 +3,6 @@ package xis.xdsp.calculators;
 import xis.xdsp.dto.*;
 import xis.xdsp.memory.Memory;
 import xis.xdsp.util.AppUtil;
-import xis.xdsp.util.ItemK;
-import xis.xdsp.util.RecipeK;
 
 import java.util.HashSet;
 
@@ -24,7 +22,9 @@ public class MemoryCalculator {
         for (Recipe recipe : Memory.getRecipes()) {
             for (String outputItemKey : recipe.getOutputs().keySet()) {
                 TransputMap recipeOutputCost = DataCalculator.calcRecipeOutputCost(recipe, outputItemKey);
-                AppUtil.securePut(recipe.getOutputsCost(), outputItemKey, recipeOutputCost);
+                if (recipeOutputCost.size() > 0) {
+                    AppUtil.securePut(recipe.getOutputsCost(), outputItemKey, recipeOutputCost);
+                }
             }
         }
     }
@@ -41,54 +41,55 @@ public class MemoryCalculator {
         }
     }
 
-    public static void calcAllRecipeRawCostPrSpeed() {
+    public static void calcAllRecipesRawCost() {
+        for (Recipe recipe : Memory.getRecipes()) {
+            DataCalculator.calcRecipeRawCost(recipe);
+        }
+    }
+
+    public static void calcAllRecipesRawCostPrSpeed() {
         for (Recipe recipe : Memory.getRecipes()) {
             DataCalculator.calcRecipeRawCostPrSpeed(recipe);
         }
     }
 
-    public static void calcAllRecipeRawCostPrExtra() {
+    public static void calcAllRecipesRawCostPrExtra() {
         for (Recipe recipe : Memory.getRecipes()) {
             DataCalculator.calcRecipeRawCostPrExtra(recipe);
         }
     }
 
 
-    public static void calcRecipesRawCosts(RecipeAltSeqMap recipeAltSeqMap) {
-
-
-        Memory.getRecipes().forEach(recipe -> {
-            System.out.println("[DataCalculator.calcRecipesItemCostTree] INI " + recipe.getName());
+    public static void calcItemsRawCosts(RecipeAltSeqMap recipeAltSeqMap) {
+        Memory.getItems().forEach(item -> {
+            System.out.println("[MemoryCalculator.calcItemsRawCosts] INI " + item.getName());
             try {
 
                 RecipeTreeNode root = new RecipeTreeNode();
                 root.setName(ROOT_NAME);
 
                 RecipeTreeNode mainBranchNode = new RecipeTreeNode();
-                mainBranchNode.setCost(new RecipeTreeCost(null, 1d, recipe.getKey()));
+                mainBranchNode.setCost(new RecipeTreeCost(item.getAbb(), 1d, null));
                 mainBranchNode.setName(composeMainBranchName(root, mainBranchNode));
                 root.addChild(mainBranchNode);
 
-                RecipeTreeCalculator.calcRecipeSequences(recipe, 1, mainBranchNode, recipeAltSeqMap);
+                RecipeTreeCalculator.calcRecipeSequences(null, item.getAbb(), 1, mainBranchNode, recipeAltSeqMap);
 
 //                recipe.setRecipeTreeNode(root);
-                recipe.setRecipeRawCost(RecipeTreeCalculator.calcTreeNodeSourcesCost(root));
+                item.setItemRawCost(RecipeTreeCalculator.calcTreeNodeRawCost(root));
 
-                System.out.println("[DataCalculator.calcRecipesItemCostTree] FIN " + recipe.getName() + " => " + root);
+                System.out.println("[MemoryCalculator.calcItemsRawCosts] FIN " + item.getName() + " => " + root);
             } catch (Exception e) {
-                System.out.println("[DataCalculator.calcRecipesItemCostTree] ERROR " + recipe.getName() + ". " + e.getClass().getSimpleName() + ":" + e.getMessage());
-                if (recipe.getName().equals("Graphene")) {
-//                    e.printStackTrace();
-                }
+                System.out.println("[DataCalculator.calcRecipesItemCostTree] ERROR " + item.getName() + ". " + e.getClass().getSimpleName() + ":" + e.getMessage());
             }
         });
     }
 
-    public static void calcSourceItems() {
-        Memory.SOURCE_ITEMS = new HashSet<>();
-        for(Recipe recipe : Memory.getRecipes()){
+    public static void calcRawItemKeys() {
+        Memory.RAW_ITEM_LIST = new HashSet<>();
+        for (Recipe recipe : Memory.getRecipes()) {
             TransputMap transputMap = recipe.getRecipeRawCost();
-            Memory.SOURCE_ITEMS.addAll(transputMap.keySet());
+            Memory.RAW_ITEM_LIST.addAll(transputMap.keySet());
         }
     }
 }

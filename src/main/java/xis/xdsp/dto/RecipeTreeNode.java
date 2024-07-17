@@ -85,7 +85,7 @@ public class RecipeTreeNode {
     }
 
     public void generateName(String alternativeName) {
-        String name = alternativeName == null ? cost.getRecipeKey() + "(" + cost.getItemKey() + ")" : alternativeName;
+        String name = alternativeName == null ?  cost.getItemKey() : alternativeName;
         this.name = name;
     }
 
@@ -122,7 +122,7 @@ public class RecipeTreeNode {
         if (parent != null && !ROOT_NAME.equals(parent.getName())) {
             this.setRecipeHistory(new ArrayList<>(getParent().getRecipeHistory()));
         }
-        this.getRecipeHistory().add(this.getCost().recipeKey);
+//        this.getRecipeHistory().add(this.getCost().recipeKey);
     }
 
     public RecipeTreeNode createFork() {
@@ -170,7 +170,7 @@ public class RecipeTreeNode {
 
     public static String composeMainBranchName(RecipeTreeNode root, RecipeTreeNode mainBranch){
         int forkIndex = root.getChildMap().size() + 1;
-        String mainBranchName = mainBranch.getCost().getRecipeKey() + "_" + forkIndex;
+        String mainBranchName = mainBranch.getCost().getItemKey() + "_" + forkIndex;
         return mainBranchName;
     }
 
