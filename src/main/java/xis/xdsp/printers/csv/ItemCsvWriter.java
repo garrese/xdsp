@@ -1,7 +1,8 @@
-package xis.xdsp.printers;
+package xis.xdsp.printers.csv;
 
 import xis.xdsp.dto.Item;
 import xis.xdsp.memory.Memory;
+import xis.xdsp.printers.base.CsvWriter;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class ItemCsvWriter extends CsvWriter {
 
-    public void printItems(String path, List<String> costHeaderListOrder, List<String> exclude) throws Exception {
+    public void print(String path, List<String> costHeaderListOrder, List<String> exclude) throws Exception {
         if (exclude == null) exclude = new ArrayList<>();
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         String date = df.format(System.currentTimeMillis());
@@ -26,7 +27,7 @@ public class ItemCsvWriter extends CsvWriter {
         try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName, true))) {
             for (Item item : itemList) {
                 List<String> itemCostHeaderListOrder = costHeaderListOrder;
-                if (!exclude.contains(item.getAbb())) {
+                if (!exclude.contains(item.getKey())) {
 
                     List<String> costHeaderList = new ArrayList<>();
                     if (item.getItemRawCost() != null) {
@@ -39,7 +40,7 @@ public class ItemCsvWriter extends CsvWriter {
                     writeHeaders(itemCostHeaderListOrder, w, costHeaderList);
                     w.write(cells(
                             item.getName(),
-                            item.getAbb(),
+                            item.getKey(),
                             String.join(",", item.getInputRecipeList()),
                             String.join(",", item.getOutputRecipeList())
                     ));

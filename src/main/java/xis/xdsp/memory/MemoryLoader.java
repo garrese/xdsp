@@ -32,11 +32,12 @@ public class MemoryLoader {
         MemoryCalculator.calcAllRecipesOutputCost();
         MemoryCalculator.calcAllRecipesSpraysNeeded();
 
-        MemoryCalculator.calcItemsRawCosts(MemoryCalculator.getAltSeqMap());
+        MemoryCalculator.calcAllItemsRawCosts(MemoryCalculator.getAltSeqMap());
         MemoryCalculator.calcAllRecipesSpraysRawCost();
         MemoryCalculator.calcAllRecipesRawCost();
         MemoryCalculator.calcAllRecipesRawCostPrSpeed();
         MemoryCalculator.calcAllRecipesRawCostPrExtra();
+        MemoryCalculator.calcAllRfps();
 
         MemoryCalculator.calcRawItemKeys();
     }

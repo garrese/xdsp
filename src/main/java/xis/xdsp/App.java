@@ -1,13 +1,12 @@
 package xis.xdsp;
 
 import xis.xdsp.calculators.MemoryCalculator;
-import xis.xdsp.calculators.RfpCalculator;
-import xis.xdsp.dto.sub.Rfp;
 import xis.xdsp.memory.Memory;
 import xis.xdsp.memory.MemoryLoader;
-import xis.xdsp.printers.ItemCsvWriter;
-import xis.xdsp.printers.RecipeCsvWriter;
-import xis.xdsp.printers.RfpCsvWriter2;
+import xis.xdsp.printers.base.JsonWriter;
+import xis.xdsp.printers.csv.ItemCsvWriter;
+import xis.xdsp.printers.csv.RecipeCsvWriter;
+import xis.xdsp.printers.csv.RfpCsvWriter2;
 import xis.xdsp.util.PrintUtil;
 
 import java.util.List;
@@ -17,9 +16,16 @@ public class App {
     public static List<String> costHeaderListOrder = List.of("IrO", "CoO", "C", "Crude", "H", "SilO", "TitO", "Stn", "Wat", "Acid", "D", "Oil",
             "Ice", "Stal", "Kim", "FSil", "UMag", "Grat", "Ph", "DfMx", "Neur", "NegSin", "Shard", "Core", "MatRec");
 
+    static String reportsPath = "C:/TMP/";
+
+//    static String rawCostsConfigLabel = "Basic";
+    static String rawCostsConfigLabel = "Renewable";
+
     public static void main(String[] args) throws Exception {
+
         MemoryLoader.load();
 
+        // PRINT DATA
         PrintUtil.printMap(Memory.getItemsMap());
         PrintUtil.printMap(Memory.getRecipesMap());
         System.out.println(Memory.RAW_ITEM_LIST);
@@ -27,27 +33,22 @@ public class App {
         alternativeRecipes();
         alternativeRecipesSelected();
 
-        generateItemCsv();
-//        generateRfpCsv2();
+        // CSV WRITERS
+//        printItemCsv();
+//        new RecipeCsvWriter().writeRecipes("C:/TMP/");
+//        new RfpCsvWriter2().writeRecipes(reportsPath, Memory.RFPS.values().stream().toList(), costHeaderListOrder);
+
+        // JSON WRITERS
+//        JsonWriter.writeCollection(reportsPath, "Items-" + rawCostsConfigLabel + "-JSON", Memory.getItems());
+//        JsonWriter.writeCollection(reportsPath, "Recipes-" + rawCostsConfigLabel + "-JSON", Memory.getRecipes());
+//        JsonWriter.writeCollection(reportsPath, "RFPs-" + rawCostsConfigLabel + "-JSON", Memory.getRfps());
+//        JsonWriter.writeMap(reportsPath, "RecipeTrees-" + rawCostsConfigLabel + "-JSON", Memory.RECIPE_TREE_NODES);
     }
 
-    public static void recipeCsvPrinter() {
-        RecipeCsvWriter recipeCsvWriter = new RecipeCsvWriter();
-        recipeCsvWriter.printRecipes("C:/TMP/");
-    }
-
-    public static void generateRfpCsv2() throws Exception {
-        List<String> excludedRecipes = List.of("OCr-As(o)","Core-Drop","MatRec-Drop","NegSin-Drop","Shard-Drop","Neur-Drop","DfMx-Drop","Ph-RR");
-        List<Rfp> rfpList = RfpCalculator.calcAllRfp(excludedRecipes, true);
-
-        RfpCsvWriter2 printer = new RfpCsvWriter2();
-        printer.printRecipes("C:/TMP/", rfpList, costHeaderListOrder);
-    }
-
-    public static void generateItemCsv() throws Exception {
+    public static void printItemCsv() throws Exception {
         ItemCsvWriter printer = new ItemCsvWriter();
         List<String> excludedItems = List.of("Log", "Plant");
-        printer.printItems("C:/TMP/", null, excludedItems);
+        printer.print("C:/TMP/", null, excludedItems);
     }
 
     public static void alternativeRecipes() {

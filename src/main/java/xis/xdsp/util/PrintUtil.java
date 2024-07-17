@@ -22,7 +22,7 @@ public class PrintUtil
             System.out.printf(
                     (k),
                     item.getName(), item.getType(), item.isRare(),
-                    item.getAbb(), item.getAbb()
+                    item.getKey(), item.getKey()
             );
         });
     }

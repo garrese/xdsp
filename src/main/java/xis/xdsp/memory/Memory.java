@@ -3,6 +3,7 @@ package xis.xdsp.memory;
 import xis.xdsp.dto.*;
 import xis.xdsp.dto.sub.Factory;
 import xis.xdsp.dto.sub.Proliferator;
+import xis.xdsp.dto.sub.Rfp;
 import xis.xdsp.util.AppUtil;
 
 import java.util.*;
@@ -15,6 +16,8 @@ public class Memory {
 
     public static Map<String, Proliferator> PROLIFERATORS;
     public static Map<String, Map<String, Factory>> FACTORIES;
+    public static Map<String, RecipeTreeNode> RECIPE_TREE_NODES;
+    public static Map<String, Rfp> RFPS;
 
     public static Set<String> RAW_ITEM_LIST;
 
@@ -74,6 +77,10 @@ public class Memory {
 
     public static Factory getFactory(String typeKey, String itemKey) {
         return FACTORIES.get(typeKey).get(itemKey);
+    }
+
+    public static Collection<Rfp> getRfps() {
+        return RFPS.values();
     }
 
 }

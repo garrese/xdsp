@@ -3,13 +3,12 @@ package xis.xdsp.dto;
 import com.google.gson.Gson;
 import lombok.Data;
 import xis.xdsp.dto.sub.Fuel;
+import xis.xdsp.dto.sub.HasKey;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Data
-public class Item {
+public class Item implements HasKey {
 
     /**
      * In-game type
@@ -27,7 +26,7 @@ public class Item {
      * Item abbreviation. Unique identifier.
      * Ingested value
      */
-    String abb;
+    String key;
 
     /**
      * In-game rare descriptor
@@ -61,6 +60,7 @@ public class Item {
     public String toString() {
         return new Gson().toJson(this);
     }
+
 }
 
 

@@ -1,12 +1,15 @@
 package xis.xdsp.calculators;
 
 import xis.xdsp.dto.*;
+import xis.xdsp.dto.sub.Rfp;
 import xis.xdsp.memory.Memory;
 import xis.xdsp.util.AppUtil;
 import xis.xdsp.util.ItemK;
 import xis.xdsp.util.RecipeK;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import static xis.xdsp.dto.RecipeTreeNode.ROOT_NAME;
 import static xis.xdsp.dto.RecipeTreeNode.composeMainBranchName;
@@ -15,8 +18,8 @@ public class MemoryCalculator {
 
     public static void calcAllItemsRecipes() {
         for (Item item : Memory.getItems()) {
-            item.setInputRecipeList(DataCalculator.calcItemInputRecipes(item.getAbb()));
-            item.setOutputRecipeList(DataCalculator.calcItemOutputRecipes(item.getAbb()));
+            item.setInputRecipeList(DataCalculator.calcItemInputRecipes(item.getKey()));
+            item.setOutputRecipeList(DataCalculator.calcItemOutputRecipes(item.getKey()));
         }
     }
 
@@ -62,7 +65,10 @@ public class MemoryCalculator {
     }
 
 
-    public static void calcItemsRawCosts(RecipeAltSeqMap recipeAltSeqMap) {
+    public static void calcAllItemsRawCosts(RecipeAltSeqMap recipeAltSeqMap) {
+
+        Memory.RECIPE_TREE_NODES = new LinkedHashMap<>();
+
         Memory.getItems().forEach(item -> {
             System.out.println("[MemoryCalculator.calcItemsRawCosts] INI " + item.getName());
             try {
@@ -71,21 +77,31 @@ public class MemoryCalculator {
                 root.setName(ROOT_NAME);
 
                 RecipeTreeNode mainBranchNode = new RecipeTreeNode();
-                mainBranchNode.setCost(new RecipeTreeCost(item.getAbb(), 1d, null));
+                mainBranchNode.setCost(new RecipeTreeCost(item.getKey(), 1d, null));
                 mainBranchNode.setName(composeMainBranchName(root, mainBranchNode));
                 root.addChild(mainBranchNode);
 
-                RecipeTreeCalculator.calcRecipeSequences(null, item.getAbb(), 1, mainBranchNode, recipeAltSeqMap);
-
-//                recipe.setRecipeTreeNode(root);
+                RecipeTreeCalculator.calcRecipeSequences(null, item.getKey(), 1, mainBranchNode, recipeAltSeqMap);
                 item.setItemRawCost(RecipeTreeCalculator.calcTreeNodeRawCost(root));
 
-                System.out.println("[MemoryCalculator.calcItemsRawCosts] FIN " + item.getName() + " => " + root);
+                Memory.RECIPE_TREE_NODES.put(mainBranchNode.getName(),root);
+
+                System.out.println("[MemoryCalculator.calcAllItemsRawCosts] FIN " + item.getName() + " => " + root);
             } catch (Exception e) {
-                System.out.println("[DataCalculator.calcRecipesItemCostTree] ERROR " + item.getName() + ". " + e.getClass().getSimpleName() + ":" + e.getMessage());
+                System.out.println("[MemoryCalculator.calcAllItemsRawCosts] ERROR " + item.getName() + ". " + e.getClass().getSimpleName() + ":" + e.getMessage());
             }
         });
     }
+
+    public static void calcAllRfps(){
+        List<String> excludedRecipes = List.of("OCr-As(o)","Core-Drop","MatRec-Drop","NegSin-Drop","Shard-Drop","Neur-Drop","DfMx-Drop","Ph-RR");
+        List<Rfp> rfpList = RfpCalculator.calcAllRfp(excludedRecipes, true);
+        Memory.RFPS = new LinkedHashMap<>();
+        for (Rfp rfp: rfpList) {
+            Memory.RFPS.put(rfp.getKey(), rfp);
+        }
+    }
+
 
     public static void calcRawItemKeys() {
         Memory.RAW_ITEM_LIST = new HashSet<>();

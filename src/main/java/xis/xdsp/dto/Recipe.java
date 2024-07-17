@@ -1,6 +1,7 @@
 package xis.xdsp.dto;
 
 import lombok.Data;
+import xis.xdsp.dto.sub.HasKey;
 import xis.xdsp.dto.sub.RecipeOrdinations;
 
 import java.util.LinkedHashMap;
@@ -8,7 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Data
-public class Recipe {
+public class Recipe implements HasKey {
 
     /**
      * In-game recipe name

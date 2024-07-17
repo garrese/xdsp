@@ -35,7 +35,7 @@ public class ItemCsvReader extends CsvReader {
             while (line < lineList.size()) {
                 List<String> colList = lineList.get(line);
                 Item item = readCsvCols(colList);
-                AppUtil.securePut(itemMap,item.getAbb(),item);
+                AppUtil.securePut(itemMap,item.getKey(),item);
                 line++;
             }
         } catch (Exception e) {
@@ -61,7 +61,7 @@ public class ItemCsvReader extends CsvReader {
                         item.setName(val);
                         break;
                     case COL_ABB:
-                        item.setAbb(val);
+                        item.setKey(val);
                         break;
                     case COL_ABBC:
                         //not used

@@ -1,4 +1,4 @@
-package xis.xdsp.printers;
+package xis.xdsp.printers.base;
 
 import xis.xdsp.util.K;
 

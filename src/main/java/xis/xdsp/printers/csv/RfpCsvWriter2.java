@@ -1,9 +1,10 @@
-package xis.xdsp.printers;
+package xis.xdsp.printers.csv;
 
 import xis.xdsp.dto.Recipe;
 import xis.xdsp.dto.TransputMap;
 import xis.xdsp.dto.sub.*;
 import xis.xdsp.memory.Memory;
+import xis.xdsp.printers.base.CsvWriter;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -11,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 public class RfpCsvWriter2 extends CsvWriter {
 
@@ -20,7 +20,7 @@ public class RfpCsvWriter2 extends CsvWriter {
 
     //ordenar por recipe totalCost > Name > factoryname > PrMode > PrKey
 
-    public void printRecipes(String path, List<Rfp> rfpList, List<String> costHeaderListOrder) throws Exception {
+    public void writeRecipes(String path, List<Rfp> rfpList, List<String> costHeaderListOrder) throws Exception {
         String fileName = path + "RFP2_" + System.currentTimeMillis() + ".csv";
 
         rfpList = rfpList.stream().sorted(Comparator.comparing(Rfp::getItemOrder)

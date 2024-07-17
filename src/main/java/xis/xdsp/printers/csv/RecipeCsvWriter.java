@@ -1,8 +1,9 @@
-package xis.xdsp.printers;
+package xis.xdsp.printers.csv;
 
 import xis.xdsp.dto.Recipe;
 import xis.xdsp.dto.TransputMap;
 import xis.xdsp.memory.Memory;
+import xis.xdsp.printers.base.CsvWriter;
 import xis.xdsp.printers.formatters.RecipeFormatter;
 
 import java.io.BufferedWriter;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 public class RecipeCsvWriter extends CsvWriter {
 
-    public void printRecipes(String path) {
+    public void writeRecipes(String path) {
 
 //        Path ResourcePath = Paths.get(Objects.requireNonNull(this.getClass().getResource("/")).getPath());
         String fileName = path + "RecipeCsvPrinter_" + System.currentTimeMillis() + ".csv";

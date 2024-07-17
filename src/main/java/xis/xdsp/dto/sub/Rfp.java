@@ -9,7 +9,7 @@ import static xis.xdsp.util.GsonUtil.GSON;
  * Recipe Factory Proliferator
  */
 @Data
-public class Rfp {
+public class Rfp implements HasKey {
 
     Integer itemOrder;
     Integer factoryOrder;
@@ -29,9 +29,20 @@ public class Rfp {
 
     TransputMap rawCostMap;
     Double rawCostTotal;
-    /** Difference in percentages from not proliferator sources cost */
+
+    /**
+     * Difference in percentages from not proliferator sources cost
+     */
     TransputMap rawCostMapPercetageOfTotal;
+
     TransputMap rawCostMapPercetageOfNoPr;
+
+    public String getKey() {
+        String key = recipeKey;
+        if (factoryItemKey != null) key += "_" + factoryItemKey;
+        if (proliferatorKey != null) key += "_" + proliferatorKey;
+        return key;
+    }
 
     @Override
     public String toString() {
