@@ -207,6 +207,10 @@ public class RecipeTreeNode {
         getChildMap().values().forEach(child -> child.forEach(consumer));
     }
 
+    public RecipeTreeNode getFirstChild() {
+        return getChildMap().values().stream().toList().getFirst();
+    }
+
     @Override
     public String toString() {
         return new Gson().toJson(this);

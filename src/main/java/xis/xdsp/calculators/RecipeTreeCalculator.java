@@ -3,6 +3,7 @@ package xis.xdsp.calculators;
 import xis.xdsp.dto.*;
 import xis.xdsp.ex.RecipeAltSeqException;
 import xis.xdsp.memory.Memory;
+import xis.xdsp.util.Debug;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -204,9 +205,12 @@ public class RecipeTreeCalculator {
 
     public static TransputMap calcTreeNodeRawCost(RecipeTreeNode recipeTreeNode) {
         TransputMap rawCost = new TransputMap();
+        if (recipeTreeNode.getFirstChild().getName().contains("Silo")) {
+            Debug.point();
+        }
         recipeTreeNode.forEach(node -> {
-            if (node.getName().equals("SilO-Mim(SilO)")) {
-//                System.out.println("break-here");
+            if (node.getName().contains("Silo")) {
+                Debug.point();
             }
             if (!node.getName().equals("root")) {
                 RecipeTreeCost cost = node.getCost();
@@ -215,16 +219,10 @@ public class RecipeTreeCalculator {
 
                 boolean mainBranch = itemKey == null;
                 if (node.getChildMap().size() == 0 && !mainBranch) {
-
-                    Double currentItemCost = cost.getAmount();
-                    Double accumulatedItemCost = rawCost.get(itemKey);
-                    Double totalItemCost = currentItemCost;
-                    if (accumulatedItemCost != null) {
-                        totalItemCost += accumulatedItemCost;
-                    }
-                    rawCost.put(itemKey, totalItemCost);
+                    rawCost.sumTransput(itemKey, cost.getAmount());
                 }
             }
+            Debug.point();
         });
         return rawCost;
     }
